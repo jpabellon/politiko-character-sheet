@@ -1,7 +1,7 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import {
-  PUBLISHED_ERRATA,
   memberLabel,
   parseErrataLog,
   reportsToText,
