@@ -145,6 +145,7 @@ export const AXES: AxisDef[] = [
   {
     key: "civil", name: "Civil liberties", plain: "Your freedoms vs. government power",
     negPole: "More government control", posPole: "More personal freedom",
+    negGamePole: "Order", posGamePole: "Liberty",
     negRadar: "Gov\u2019t control", posRadar: "Personal freedom",
     negRadarKey: "state_restriction", posRadarKey: "civil_liberties",
     colorVar: "var(--axis-civil)", evidence: "Bills about free speech, privacy and police powers",
