@@ -13,3 +13,4 @@
 - Social links come from scripts/data/house_members_socials.csv via scripts/build-socials.py into src/data/socials.json (keyed by politicianName); never hand-edit.
 - Errata must keep working with no server, so the page can be hosted statically: published corrections are hand-edited plain-text blocks in public/errata-log.txt (fetched when the page opens), and new reports are stored in the visitor's browser and exported as a .txt file. Do not add a database, inbox, or server endpoint for corrections.
 - The site has two wording modes, Gamer (default) and Boomer (plain), stored in localStorage key "plain-mode" and switched via ModeSwitch in src/components/hud.tsx; components swap text with the <T game=... plain=...> helper, and game-style pole names live in AXES as negGamePole/posGamePole/negGameRadar/posGameRadar.
+- Family members come from scripts/data/house_family.csv via scripts/build-family.py into src/data/family.json (keyed by politicianName); never hand-edit.
