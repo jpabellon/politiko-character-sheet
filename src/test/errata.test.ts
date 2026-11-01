@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
+  githubIssueUrl,
   memberLabel,
   parseErrataLog,
   reportsToText,
@@ -74,5 +75,17 @@ describe("Errata plain-text log", () => {
     expect(memberLabel("general")).toBe("General");
     expect(memberLabel("abante-bienvenido-m-jr")).toBe("Bienvenido Jr. M. Abante");
     expect(memberLabel("not-a-real-slug")).toBe("not-a-real-slug");
+  });
+});
+
+describe("githubIssueUrl", () => {
+  it("builds a pre-filled new-issue link with the errata label", () => {
+    const url = new URL(
+      githubIssueUrl({ date: "2026-11-01", member: "general", stat: "whole", issue: "Wrong & bad", outcome: "" }),
+    );
+    expect(url.origin + url.pathname).toBe("https://github.com/jpabellon/politiko-character-sheet/issues/new");
+    expect(url.searchParams.get("labels")).toBe("errata");
+    expect(url.searchParams.get("title")).toContain("General");
+    expect(url.searchParams.get("body")).toContain("Wrong & bad");
   });
 });

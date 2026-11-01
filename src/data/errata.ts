@@ -114,6 +114,30 @@ export function reportsToText(list: ErrataEntry[]): string {
   return `${header}\n\n${blocks}\n`;
 }
 
+const REPO = "jpabellon/politiko-character-sheet";
+const URL_ISSUE_MAX = 1500;
+
+/** Pre-filled "new issue" page on GitHub. The visitor reviews it and submits with their own account. */
+export function githubIssueUrl(e: ErrataEntry): string {
+  const issue = e.issue.length > URL_ISSUE_MAX ? `${e.issue.slice(0, URL_ISSUE_MAX)}…` : e.issue;
+  const body = [
+    `Member: ${memberLabel(e.member)} (${e.member})`,
+    `Stat: ${statLabel(e.stat)}`,
+    "",
+    "What is wrong:",
+    issue,
+    "",
+    "Public source (bill number, vote, dated statement, or report with a link):",
+    "",
+  ].join("\n");
+  const params = new URLSearchParams({
+    title: `Errata: ${memberLabel(e.member)} - ${statLabel(e.stat)}`,
+    body,
+    labels: "errata",
+  });
+  return `https://github.com/${REPO}/issues/new?${params.toString()}`;
+}
+
 export function downloadText(filename: string, text: string) {
   const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
   const a = document.createElement("a");
