@@ -1,24 +1,29 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Crest, Panel, T } from "@/components/hud";
+import { PH_BOUNDS, PH_PATH } from "@/data/ph-map";
 import { ROSTER, REGIONS, fullName, place, regionShort } from "@/data/members";
 
-// Approximate positions on a simplified archipelago (percent of box)
+// Approximate region centers as [lon, lat]
 const POS: Record<string, [number, number]> = {
-  "REGION I (ILOCOS REGION)": [30, 14], "CORDILLERA ADMINISTRATIVE REGION (CAR)": [40, 12], "REGION II (CAGAYAN VALLEY)": [48, 8],
-  "REGION III (CENTRAL LUZON)": [36, 26], "NATIONAL CAPITAL REGION (NCR)": [40, 33], "REGION IV-A (CALABARZON)": [46, 38],
-  "REGION IV-B (MIMAROPA)": [30, 48], "REGION V (BICOL REGION)": [62, 44], "REGION VI (WESTERN VISAYAS)": [42, 60],
-  "REGION VII (CENTRAL VISAYAS)": [56, 63], "REGION VIII (EASTERN VISAYAS)": [68, 56], "REGION IX (ZAMBOANGA PENINSULA)": [42, 80],
-  "REGION X (NORTHERN MINDANAO)": [58, 75], "REGION XIII (Caraga)": [72, 72], "REGION XI (DAVAO REGION)": [72, 86],
-  "REGION XII (SOCCSKSARGEN)": [60, 90], "BARMM (CENTRAL MINDANAO)": [52, 84], "AUTONOMOUS REGION IN MUSLIM MINDANAO (ARMM)": [34, 92],
+  "REGION I (ILOCOS REGION)": [120.4, 16.6], "CORDILLERA ADMINISTRATIVE REGION (CAR)": [121.0, 17.4], "REGION II (CAGAYAN VALLEY)": [121.8, 17.2],
+  "REGION III (CENTRAL LUZON)": [120.7, 15.4], "NATIONAL CAPITAL REGION (NCR)": [121.0, 14.6], "REGION IV-A (CALABARZON)": [121.4, 14.1],
+  "REGION IV-B (MIMAROPA)": [119.3, 11.0], "REGION V (BICOL REGION)": [123.4, 13.4], "REGION VI (WESTERN VISAYAS)": [122.5, 10.9],
+  "REGION VII (CENTRAL VISAYAS)": [123.8, 10.1], "REGION VIII (EASTERN VISAYAS)": [124.9, 11.6], "REGION IX (ZAMBOANGA PENINSULA)": [122.6, 7.8],
+  "REGION X (NORTHERN MINDANAO)": [124.6, 8.3], "REGION XIII (Caraga)": [125.8, 8.9], "REGION XI (DAVAO REGION)": [125.8, 7.1],
+  "REGION XII (SOCCSKSARGEN)": [124.8, 6.4], "BARMM (CENTRAL MINDANAO)": [124.2, 7.3], "AUTONOMOUS REGION IN MUSLIM MINDANAO (ARMM)": [121.0, 6.0],
 };
+const toPct = ([lon, lat]: [number, number]): [number, number] => [
+  ((lon - PH_BOUNDS.lon0) / (PH_BOUNDS.lon1 - PH_BOUNDS.lon0)) * 100,
+  ((PH_BOUNDS.lat1 - lat) / (PH_BOUNDS.lat1 - PH_BOUNDS.lat0)) * 100,
+];
 
 export const Route = createFileRoute("/realm")({
   validateSearch: (s: Record<string, unknown>): { region?: string | undefined } => ({ region: typeof s["region"] === "string" ? s["region"] : undefined }),
   head: () => ({
     meta: [
-      { title: "Realm Map — Politiko Character Sheet" },
+      { title: "Realm — Politiko Character Sheet" },
       { name: "description", content: "Browse House members by region and province." },
-      { property: "og:title", content: "Realm Map — Politiko Character Sheet" },
+      { property: "og:title", content: "Realm — Politiko Character Sheet" },
       { property: "og:description", content: "Browse House members by region and province." },
     ],
   }),
@@ -34,19 +39,18 @@ function Realm() {
   return (
     <div className="space-y-5">
       <header className="rise-in">
-        <p className="hud-label text-primary"><T game="Realm Map" plain="Browse by place" /></p>
+        <p className="hud-label text-primary"><T game="Realm" plain="Browse by place" /></p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">Who represents where</h1>
-        <p className="mt-2 text-muted-foreground">Pins mark regions. No shading by score.</p>
+        <p className="mt-2 text-muted-foreground">Pins mark regions on the map of the Philippines. No shading by score.</p>
       </header>
       <div className="grid gap-5 lg:grid-cols-12">
         <Panel className="lg:col-span-5">
-          <div className="relative mx-auto aspect-[3/4] max-w-sm">
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden>
-              <path d="M30 4 L50 4 L50 20 L44 30 L52 40 L66 42 L70 50 L58 50 L48 44 L40 40 L34 30 L28 16 Z M26 44 L34 46 L30 56 L24 54 Z M38 54 L48 56 L46 68 L38 66 Z M52 58 L62 60 L60 68 L52 66 Z M64 52 L72 52 L72 62 L66 62 Z M40 76 L52 72 L76 68 L80 84 L76 94 L60 96 L50 88 L40 84 Z M30 90 L38 90 L36 96 L30 96 Z"
-                fill="var(--panel-strong)" stroke="var(--border)" strokeWidth="0.5" />
+          <div className="relative mx-auto max-w-sm" style={{ aspectRatio: `${PH_BOUNDS.w} / ${PH_BOUNDS.h}` }}>
+            <svg viewBox={`0 0 ${PH_BOUNDS.w} ${PH_BOUNDS.h}`} className="absolute inset-0 h-full w-full" aria-hidden>
+              <path d={PH_PATH} fill="var(--panel-strong)" stroke="var(--muted-foreground)" strokeWidth="0.25" strokeLinejoin="round" />
             </svg>
             {REGIONS.map((r) => {
-              const [x, y] = POS[r] ?? [50, 50];
+              const [x, y] = POS[r] ? toPct(POS[r]) : [50, 50];
               const n = ROSTER.filter((m) => m.region === r).length;
               const on = region === r;
               return (
