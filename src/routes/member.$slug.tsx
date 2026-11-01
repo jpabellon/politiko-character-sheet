@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { AlertTriangle, Copy, ExternalLink, FileWarning, MapPin, Phone, Share2, Swords } from "lucide-react";
 import { toast } from "sonner";
 import { Crest, Panel, RadarChart, StatBlock, T } from "@/components/hud";
-import { AXES, ROSTER, STATUS_TEXT, billUrl, fmtDate, fullName, place, loadMember, regionShort, type Bill } from "@/data/members";
+import { AXES, ROSTER, STATUS_TEXT, billUrl, jurisAuthorUrl, fmtDate, fullName, place, loadMember, regionShort, type Bill } from "@/data/members";
 
 export const Route = createFileRoute("/member/$slug")({
   loader: async ({ params }) => {
@@ -76,6 +76,7 @@ function Sheet() {
               <Swords className="h-4 w-4" /> <T game="Versus" plain="Compare" />
             </Link>
             <button onClick={share} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><Share2 className="h-4 w-4" />Share</button>
+            {jurisAuthorUrl(m.houseCode) && <a href={jurisAuthorUrl(m.houseCode)!} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary">All bills on BatasWatch ↗</a>}
             <Link to="/errata" search={{ member: m.slug }} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><FileWarning className="h-4 w-4" />Report a correction</Link>
           </div>
         </Panel>
@@ -109,7 +110,7 @@ function Sheet() {
       </Panel>
 
       <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
-        <Panel title="Quest log" sub={`${authored.length} bills as principal author · newest first`} className="lg:col-span-8" delay={375}>
+        <Panel title="Quest log" sub={`${authored.length} bills as principal author · newest first · links open BatasWatch (bills.juris.ph)`} className="lg:col-span-8" delay={375}>
           {authored.length ? <QuestList bills={authored} /> : (
             <p className="fog-hatch border border-fog p-4 text-sm text-muted-foreground">No principal-authored bills found on the member's House page.</p>
           )}

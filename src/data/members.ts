@@ -149,7 +149,10 @@ export const rosterMember = (slug: string) => ROSTER.find((m) => m.slug === slug
 export const scoredCount = (m: RosterMember) => AXES.filter((a) => m.scores[a.key].score !== null).length;
 export const REGIONS = [...new Set(ROSTER.map((m) => m.region))].sort();
 export const TAGS = [...new Set(ROSTER.flatMap((m) => m.tags))].sort();
-export const billUrl = (id: string) => `https://docs.congress.hrep.online/legisdocs/basic_20/${id}.pdf`;
+export const billUrl = (id: string) => {
+  return `https://bills.juris.ph/bills/house/${id.toLowerCase()}`;
+};
+export const billPdfUrl = (id: string) => `https://docs.congress.hrep.online/legisdocs/basic_20/${id}.pdf`;
 export const regionShort = (r: string) => {
   const m = r.match(/\(([^)]+)\)/);
   return m ? m[1]! : r;
@@ -179,3 +182,11 @@ export const BETTERGOV_URL = "https://bettergov.ph";
 
 export const place = (m: Pick<RosterMember, "municipality" | "province">) =>
   [m.municipality, m.province].filter(Boolean).join(", ");
+
+import jurisAuthors from "./juris-authors.json";
+const JURIS = jurisAuthors as Record<string, { name: string; bills: number }>;
+/** BatasWatch (bills.juris.ph) author page for a House member code, built by scripts/build-juris.py. */
+export const jurisAuthorUrl = (houseCode?: string | null) => {
+  const a = houseCode ? JURIS[houseCode] : undefined;
+  return a ? `https://bills.juris.ph/authors?${new URLSearchParams({ author: a.name })}` : null;
+};
