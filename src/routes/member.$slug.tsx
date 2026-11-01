@@ -100,8 +100,14 @@ function Sheet() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
-        <Panel title="Stat block" sub="Tap a stat to see the evidence behind it" className="lg:col-span-7" delay={150}><StatBlock m={m} /></Panel>
-        <Panel title="Radar" sub="Eight poles, opposite pairs on opposite spokes" className="lg:col-span-5" delay={225}><RadarChart members={[m]} /></Panel>
+        <Panel title="Stat block" sub="Tap a stat to see the evidence behind it" className="lg:col-span-7" delay={150}>
+          <StatBlock m={m} />
+          <Link to="/rulebook" className="mt-4 inline-flex min-h-11 items-center text-sm text-primary underline-offset-4 hover:underline">What do these scores mean? Read the Rulebook →</Link>
+        </Panel>
+        <Panel title="Radar" sub="The four scores drawn as a shape" className="lg:col-span-5" delay={225}>
+          <RadarChart members={[m]} />
+          <Link to="/rulebook" className="mt-4 inline-flex min-h-11 items-center text-sm text-primary underline-offset-4 hover:underline">How to read this chart →</Link>
+        </Panel>
       </div>
 
       <Panel delay={300}>
