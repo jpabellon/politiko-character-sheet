@@ -111,6 +111,7 @@ function Rulebook() {
       </Panel>
 
       <Panel title="Word list" sub="Game words and what they mean">
+        <p className="mb-3 text-sm text-muted-foreground">The Gamer / Boomer switch in the top bar swaps these words everywhere on the site.</p>
         <dl className="grid gap-3 text-sm sm:grid-cols-2">
           {[
             ["Character sheet", "A member's profile page"], ["Stat", "One of the four scores"],

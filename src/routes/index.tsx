@@ -82,15 +82,19 @@ function Roster() {
 
   return (
     <div>
-      <section className="rise-in mb-8 max-w-3xl">
+      <section className="rise-in mb-6 max-w-3xl">
         <p className="hud-label text-primary">20th Congress · House of Representatives</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-5xl">
           <T game="Choose a character." plain="Find your representative." />
         </h1>
         <p className="mt-3 text-muted-foreground sm:text-lg">
-          Every member as a character sheet: four stats from the bills they filed, how much evidence backs each one, and a log of what they authored. Where evidence is thin, we say so.
+          <T
+            game="Every member as a character sheet: four stats from the bills they filed, a scouting level for each, and a quest log of what they authored. Where evidence is thin, the fog stays."
+            plain="Every member as a simple profile: four scores from the bills they filed, a note on how sure we are, and a list of what they authored. Where proof is thin, we say so."
+          />
         </p>
       </section>
+      <IntroCallout />
 
       <div className="hud-panel mb-6 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4">
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, city or province" aria-label="Filter by name or district" className={selectCls + " lg:col-span-1"} />
