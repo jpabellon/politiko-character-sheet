@@ -1,17 +1,18 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { ArrowLeftRight } from "lucide-react";
 import { ConfidenceBadge, Crest, MeterBar, Panel, RadarChart, T } from "@/components/hud";
-import { AXES, MEMBERS, fullName, getMember, type Member } from "@/data/members";
+import { AXES, ROSTER, fullName, loadMember, type Member } from "@/data/members";
 
 export const Route = createFileRoute("/versus/$pair")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const [a = "", b = ""] = params.pair.split("~");
-    if (!getMember(a) || !getMember(b)) throw notFound();
-    return { a, b };
+    const [A, B] = await Promise.all([loadMember(a), loadMember(b)]);
+    if (!A || !B) throw notFound();
+    return { A, B };
   },
   head: ({ loaderData }) => {
-    const a = loaderData && getMember(loaderData.a);
-    const b = loaderData && getMember(loaderData.b);
+    const a = loaderData?.A;
+    const b = loaderData?.B;
     const t = a && b ? `${a.lastName} vs ${b.lastName} — Versus` : "Versus — Politiko";
     const d = "Compare two House members on the same four axes. No winner, no ranking.";
     return { meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }] };
@@ -24,15 +25,15 @@ function Picker({ value, other, onChange, label }: { value: string; other: strin
   return (
     <select aria-label={label} value={value} onChange={(e) => onChange(e.target.value)}
       className="h-11 w-full border border-input bg-background px-3 text-sm focus:border-primary focus:outline-none">
-      {MEMBERS.filter((m) => m.slug !== other).map((m) => <option key={m.slug} value={m.slug}>{m.lastName}, {m.firstName}</option>)}
+      {ROSTER.filter((m) => m.slug !== other).map((m) => <option key={m.slug} value={m.slug}>{m.lastName}, {m.firstName}</option>)}
     </select>
   );
 }
 
 function Versus() {
-  const { a, b } = Route.useLoaderData();
+  const { A, B } = Route.useLoaderData();
+  const a = A.slug, b = B.slug;
   const navigate = useNavigate();
-  const A = getMember(a)!, B = getMember(b)!;
   const go = (x: string, y: string) => navigate({ to: "/versus/$pair", params: { pair: `${x}~${y}` } });
   const shared = A.tags.filter((t) => B.tags.includes(t));
 
@@ -106,8 +107,8 @@ function Head({ m, side }: { m: Member; side: number }) {
       <Crest m={m} />
       <div className="min-w-0">
         <p className="truncate text-lg font-bold">{fullName(m)}</p>
-        <p className="truncate text-xs text-muted-foreground">{m.province} · {m.party}</p>
-        <p className="mt-1 font-mono text-[0.65rem] uppercase text-muted-foreground">{m.bills.filter((b) => b.role === "authored").length} bills authored</p>
+        <p className="truncate text-xs text-muted-foreground">{m.municipality}, {m.province}</p>
+        <p className="mt-1 font-mono text-[0.65rem] uppercase text-muted-foreground">{m.authoredCount} bills authored</p>
       </div>
     </Link>
   );

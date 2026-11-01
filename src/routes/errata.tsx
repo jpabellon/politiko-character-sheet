@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Panel } from "@/components/hud";
-import { AXES, ERRATA, MEMBERS, fullName, getMember } from "@/data/members";
+import { AXES, ROSTER, fullName } from "@/data/members";
 
 type S = { member?: string | undefined; stat?: string | undefined };
 
@@ -50,7 +50,7 @@ function Errata() {
         <form onSubmit={submit} className="space-y-3" noValidate>
           <label className="block text-sm">Member
             <select value={member} onChange={(e) => setMember(e.target.value)} className={field + " mt-1 h-11"}>
-              <option value="">Choose…</option>{MEMBERS.map((m) => <option key={m.slug} value={m.slug}>{fullName(m)}</option>)}
+              <option value="">Choose…</option>{ROSTER.map((m) => <option key={m.slug} value={m.slug}>{fullName(m)}</option>)}
             </select>
           </label>
           <label className="block text-sm">Stat (optional)
@@ -67,23 +67,7 @@ function Errata() {
         </form>
       </Panel>
       <Panel title="Public log" className="lg:col-span-7">
-        <ol className="space-y-3">
-          {ERRATA.map((e) => {
-            const m = getMember(e.member);
-            return (
-              <li key={e.id} className="border border-border p-3">
-                <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-                  <span className="text-primary">{e.id}</span><span className="text-muted-foreground">{e.date}</span>
-                  <span className="border border-border px-1.5 uppercase">{e.status}</span>
-                  {m && <span className="text-muted-foreground">{fullName(m)}</span>}
-                </div>
-                <p className="mt-2 text-sm">{e.text}</p>
-                {"reason" in e && e.reason && <p className="mt-1 text-sm text-muted-foreground">Reason: {e.reason}</p>}
-                {e.reply && <p className="mt-2 border-l-2 border-primary pl-2 text-sm italic text-muted-foreground">{e.reply}</p>}
-              </li>
-            );
-          })}
-        </ol>
+        <p className="fog-hatch border border-fog p-6 text-center text-sm text-muted-foreground">No corrections logged yet for this assessment (1 Nov 2026).</p>
       </Panel>
     </div>
   );

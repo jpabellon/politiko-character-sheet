@@ -1,28 +1,27 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
-import { AlertTriangle, Copy, ExternalLink, FileWarning, MapPin, Share2, Swords } from "lucide-react";
+import { useMemo, useState } from "react";
+import { AlertTriangle, Copy, ExternalLink, FileWarning, MapPin, Phone, Share2, Swords } from "lucide-react";
 import { toast } from "sonner";
 import { Crest, Panel, RadarChart, StatBlock, T } from "@/components/hud";
-import { AXES, MEMBERS, STATUS_TEXT, billUrl, fmtDate, fullName, getMember, type Bill } from "@/data/members";
+import { AXES, ROSTER, STATUS_TEXT, billUrl, fmtDate, fullName, loadMember, regionShort, type Bill } from "@/data/members";
 
 export const Route = createFileRoute("/member/$slug")({
-  loader: ({ params }) => {
-    const m = getMember(params.slug);
+  loader: async ({ params }) => {
+    const m = await loadMember(params.slug);
     if (!m) throw notFound();
-    return { slug: m.slug };
+    return m;
   },
-  head: ({ loaderData }) => {
-    const m = loaderData ? getMember(loaderData.slug) : undefined;
+  head: ({ loaderData: m }) => {
     if (!m) return { meta: [{ title: "Member not found — Politiko" }, { name: "robots", content: "noindex" }] };
     const t = `${fullName(m)} — Character Sheet`;
-    return {
-      meta: [
-        { title: t },
-        { name: "description", content: m.summary },
-        { property: "og:title", content: t },
-        { property: "og:description", content: m.summary },
-      ],
-    };
+    const meta = [
+      { title: t },
+      { name: "description", content: m.summary.slice(0, 160) },
+      { property: "og:title", content: t },
+      { property: "og:description", content: m.summary.slice(0, 200) },
+    ];
+    if (m.photo) meta.push({ property: "og:image", content: m.photo }, { name: "twitter:image", content: m.photo });
+    return { meta };
   },
   notFoundComponent: () => (
     <div className="py-20 text-center">
@@ -35,11 +34,11 @@ export const Route = createFileRoute("/member/$slug")({
 });
 
 function Sheet() {
-  const { slug } = Route.useLoaderData();
-  const m = getMember(slug)!;
-  const authored = [...m.bills.filter((b) => b.role === "authored")].sort((a, b) => b.date.localeCompare(a.date));
-  const coauthored = m.bills.filter((b) => b.role === "coauthored");
-  const other = MEMBERS.find((x) => x.slug !== m.slug)!;
+  const m = Route.useLoaderData();
+  const authored = useMemo(() => m.bills.filter((b) => b.role === "authored").sort((a, b) => (b.date ?? "").localeCompare(a.date ?? "")), [m]);
+  const coauthored = useMemo(() => m.bills.filter((b) => b.role === "coauthored").sort((a, b) => (b.date ?? "").localeCompare(a.date ?? "")), [m]);
+  const enacted = authored.filter((b) => b.ra).length;
+  const other = ROSTER.find((x) => x.slug !== m.slug)!;
 
   const share = async () => {
     const url = window.location.href;
@@ -56,24 +55,24 @@ function Sheet() {
       {m.status !== "active" && (
         <div role="status" className="rise-in flex items-start gap-2 border border-border bg-panel-strong px-4 py-3 text-sm">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-          <span><strong>{STATUS_TEXT[m.status]}</strong>{m.statusDate && <> on {fmtDate(m.statusDate)}</>}. Stats remain as assessed on {fmtDate(m.assessmentDate)}.</span>
+          <span><strong>{STATUS_TEXT[m.status]}</strong>{m.statusDate && <> on {fmtDate(m.statusDate)}</>}. {m.office}. Stats remain as assessed on {fmtDate(m.assessmentDate)}.</span>
         </div>
       )}
 
-      {/* Row 1-2 */}
       <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
         <Panel className="lg:col-span-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             <Crest m={m} size="lg" />
             <div className="min-w-0">
-              <p className="hud-label text-primary">{m.profileLabel}</p>
+              <p className="hud-label text-primary">{m.role?.split(" · ")[0] ?? "Representative"}</p>
               <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-4xl">{fullName(m)}</h1>
               <p className="mt-1 text-muted-foreground">{m.office}</p>
-              <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="h-3.5 w-3.5" />{m.municipality}, {m.province} · {m.region}</p>
+              <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="h-3.5 w-3.5 shrink-0" />{m.municipality}, {m.province} · {regionShort(m.region)}</p>
             </div>
           </div>
+          <p className="mt-4 text-sm text-muted-foreground"><span className="hud-label mr-2">Profile</span>{m.profileLabel}</p>
           <div className="mt-5 flex flex-wrap gap-2">
-            <Link to="/versus/$pair" params={{ pair: `${m.slug}~${other.slug}` }} className="inline-flex min-h-11 items-center gap-2 bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90">
+            <Link to="/versus/$pair" params={{ pair: `${m.slug}~${other.slug}` }} className="inline-flex min-h-11 items-center gap-2 bg-brand px-4 text-sm font-semibold text-foreground hover:opacity-90">
               <Swords className="h-4 w-4" /> <T game="Versus" plain="Compare" />
             </Link>
             <button onClick={share} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><Share2 className="h-4 w-4" />Share</button>
@@ -81,8 +80,12 @@ function Sheet() {
           </div>
         </Panel>
         <Panel className="lg:col-span-4" delay={75}>
-          <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm lg:grid-cols-1">
-            <div><dt className="hud-label">Party (fact)</dt><dd>{m.party} <span className="text-xs text-muted-foreground">as of {fmtDate(m.partyAsOf)}</span></dd></div>
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+            <div><dt className="hud-label">Bills authored</dt><dd className="font-mono text-2xl font-bold">{m.authoredCount}</dd></div>
+            <div><dt className="hud-label">Co-authored</dt><dd className="font-mono text-2xl font-bold">{m.coauthoredCount}</dd></div>
+            <div><dt className="hud-label">Became law</dt><dd className="font-mono text-2xl font-bold">{enacted}</dd></div>
+            <div><dt className="hud-label">Committees</dt><dd className="font-mono text-2xl font-bold">{m.committees.length}</dd></div>
+            <div><dt className="hud-label">Party (fact)</dt><dd>{m.party ?? <span className="text-muted-foreground">Not recorded</span>}</dd></div>
             <div><dt className="hud-label">Status</dt><dd>{STATUS_TEXT[m.status]}</dd></div>
             <div><dt className="hud-label">As of</dt><dd className="font-mono">{m.assessmentDate}</dd></div>
             <div><dt className="hud-label">Evidence window</dt><dd className="font-mono text-xs">{m.windowStart} → {m.windowEnd}</dd></div>
@@ -90,33 +93,29 @@ function Sheet() {
         </Panel>
       </div>
 
-      {/* Row 3 */}
       <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
-        <Panel title="Stat block" sub="Tap a stat to see the bills behind it" className="lg:col-span-7" delay={150}><StatBlock m={m} /></Panel>
+        <Panel title="Stat block" sub="Tap a stat to see the evidence behind it" className="lg:col-span-7" delay={150}><StatBlock m={m} /></Panel>
         <Panel title="Radar" sub="Eight poles, opposite pairs on opposite spokes" className="lg:col-span-5" delay={225}><RadarChart members={[m]} /></Panel>
       </div>
 
-      {/* Row 4 */}
       <Panel delay={300}>
         <div className="grid gap-4 md:grid-cols-2">
           <div><p className="hud-label mb-1">Summary</p><p>{m.summary}</p></div>
           <div className="border-l-4 border-primary bg-background/60 p-3">
             <p className="hud-label mb-1 text-foreground">Known unknowns</p>
             <p className="text-sm">{m.caveat}</p>
-            <p className="mt-1 text-xs text-muted-foreground">Based on bills only — not votes, speeches or conduct.</p>
           </div>
         </div>
       </Panel>
 
-      {/* Row 5 */}
       <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
-        <Panel title="Quest log" sub="Bills authored · newest first" className="lg:col-span-8" delay={375}>
+        <Panel title="Quest log" sub={`${authored.length} bills as principal author · newest first`} className="lg:col-span-8" delay={375}>
           {authored.length ? <QuestList bills={authored} /> : (
-            <p className="fog-hatch border border-fog p-4 text-sm text-muted-foreground">No bills found in this evidence window ({m.windowStart} to {m.windowEnd}).</p>
+            <p className="fog-hatch border border-fog p-4 text-sm text-muted-foreground">No principal-authored bills found on the member's House page.</p>
           )}
           {coauthored.length > 0 && (
-            <div className="mt-6 opacity-80">
-              <p className="hud-label mb-2"><T game="Ally moves" plain="Co-authored bills" /> · co-authored, weighted lower</p>
+            <div className="mt-8 opacity-85">
+              <p className="hud-label mb-2"><T game="Ally moves" plain="Co-authored bills" /> · {coauthored.length} co-authored, weighted lower</p>
               <QuestList bills={coauthored} quiet />
             </div>
           )}
@@ -129,14 +128,30 @@ function Sheet() {
               ))}
             </div>
           </Panel>
+          {m.committees.length > 0 && (
+            <Panel title="Committees" delay={500}>
+              <ul className="max-h-72 space-y-1.5 overflow-y-auto pr-1 text-sm">
+                {m.committees.map((c) => (
+                  <li key={c.name} className="flex justify-between gap-3 border-b border-border/60 pb-1.5">
+                    <span>{c.name}</span><span className="shrink-0 text-right text-xs text-muted-foreground">{c.position}</span>
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+          )}
           <Panel title="Realm" delay={525}>
             <p className="text-sm">{m.municipality}<br /><span className="text-muted-foreground">{m.province} · {m.region}</span></p>
-            <Link to="/realm" search={{ region: m.region }} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline underline-offset-2">See members in {m.region}</Link>
+            {m.contact?.room && (
+              <p className="mt-3 flex items-start gap-2 text-sm text-muted-foreground"><Phone className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                <span>{m.contact.room}{m.contact.phones.length > 0 && <><br />{m.contact.phones.join(" · ")}</>}</span></p>
+            )}
+            <Link to="/realm" search={{ region: m.region }} className="mt-2 inline-flex min-h-11 items-center text-sm text-primary underline underline-offset-2">See members in {regionShort(m.region)}</Link>
           </Panel>
           <Panel title="Sources" delay={600}>
             <ul className="space-y-1 text-sm">
-              <li className="text-muted-foreground">Open Congress profile <span className="font-mono text-[0.65rem] uppercase">(unverified link)</span></li>
-              <li><a href="https://congress.gov.ph" target="_blank" rel="noreferrer" className="inline-flex min-h-9 items-center gap-1 text-primary">House bill pages <ExternalLink className="h-3 w-3" /></a></li>
+              {m.houseUrl && <li><a href={m.houseUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-9 items-center gap-1 text-primary">House member page <ExternalLink className="h-3 w-3" /></a></li>}
+              <li><a href={m.openCongressUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-9 items-center gap-1 text-primary">Open Congress profile <ExternalLink className="h-3 w-3" /></a>
+                <span className="ml-1 font-mono text-[0.6rem] uppercase text-muted-foreground">(service may be offline)</span></li>
             </ul>
             <button onClick={cite} className="mt-2 inline-flex min-h-11 items-center gap-2 border border-border px-3 text-sm hover:border-primary"><Copy className="h-4 w-4" />Copy citation</button>
           </Panel>
@@ -147,29 +162,42 @@ function Sheet() {
 }
 
 function QuestList({ bills, quiet }: { bills: Bill[]; quiet?: boolean }) {
-  const [showAll, setShowAll] = useState(false);
-  const shown = showAll ? bills : bills.slice(0, 8);
+  const [limit, setLimit] = useState(10);
+  const [q, setQ] = useState("");
+  const filtered = q ? bills.filter((b) => `${b.id} ${b.title} ${b.referral ?? ""}`.toLowerCase().includes(q.toLowerCase())) : bills;
+  const shown = filtered.slice(0, limit);
   return (
     <>
+      {bills.length > 10 && (
+        <input value={q} onChange={(e) => { setQ(e.target.value); setLimit(10); }} placeholder="Filter bills by number, title or committee" aria-label="Filter bills"
+          className="mb-3 h-11 w-full border border-input bg-background px-3 text-sm focus:border-primary focus:outline-none" />
+      )}
       <ul className="divide-y divide-border border-y border-border">
         {shown.map((b) => {
           const ax = AXES.find((a) => a.key === b.informs);
           return (
             <li key={b.id}>
-              <a href={billUrl(b.id)} target="_blank" rel="noreferrer" className="flex min-h-14 flex-col gap-1 py-3 hover:bg-panel-strong/50 sm:flex-row sm:items-center sm:gap-4 sm:px-2">
-                <span className={`font-mono text-xs ${quiet ? "text-muted-foreground" : "text-primary"} sm:w-20`}>{b.id}</span>
-                <span className="flex-1 text-sm">{b.title}</span>
-                <span className="flex flex-wrap items-center gap-2 text-xs">
-                  <span className="bg-muted px-1.5 py-0.5 text-muted-foreground">{b.topic}</span>
-                  {ax && <span className="inline-flex items-center gap-1 text-muted-foreground"><span className="h-2 w-2" style={{ background: ax.colorVar }} />{ax.name}</span>}
-                  <span className="font-mono text-muted-foreground">{b.date.slice(0, 7)}</span>
+              <a href={billUrl(b.id)} target="_blank" rel="noreferrer" className="flex min-h-14 flex-col gap-1.5 py-3 hover:bg-panel-strong/50 sm:px-2">
+                <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <span className={`font-mono text-xs ${quiet ? "text-muted-foreground" : "text-primary"}`}>{b.id}</span>
+                  {b.date && <span className="font-mono text-xs text-muted-foreground">{b.date}</span>}
+                  {b.ra && <span className="border border-primary px-1.5 font-mono text-[0.65rem] uppercase text-primary">{b.ra}</span>}
+                  {ax && <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><span className="h-2 w-2" style={{ background: ax.colorVar }} />Informs {ax.name}</span>}
+                </span>
+                <span className="line-clamp-3 text-sm">{b.title}</span>
+                <span className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                  {b.referral && <span className="bg-muted px-1.5 py-0.5 capitalize">{b.referral.toLowerCase()}</span>}
+                  {b.status && <span className="line-clamp-1">{b.status}</span>}
                 </span>
               </a>
             </li>
           );
         })}
       </ul>
-      {bills.length > 8 && <button onClick={() => setShowAll(!showAll)} className="mt-2 min-h-11 text-sm text-primary">{showAll ? "Show fewer" : `Show all ${bills.length}`}</button>}
+      {filtered.length === 0 && <p className="py-3 text-sm text-muted-foreground">No bills match.</p>}
+      {filtered.length > limit && (
+        <button onClick={() => setLimit(limit + 25)} className="mt-2 min-h-11 text-sm text-primary">Show more ({filtered.length - limit} remaining)</button>
+      )}
     </>
   );
 }
