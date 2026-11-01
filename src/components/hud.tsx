@@ -387,7 +387,7 @@ export function CommandSearch({ className }: { className?: string }) {
 const NAV = [
   { to: "/", label: "Roster", plain: "Members", icon: Users },
   { to: "/versus", label: "Versus", plain: "Compare", icon: Swords },
-  { to: "/realm", label: "Realm Map", plain: "By place", icon: Map },
+  { to: "/realm", label: "Realm", plain: "By place", icon: Map },
   { to: "/rulebook", label: "Rulebook", plain: "Method", icon: ScrollText },
 ] as const;
 
