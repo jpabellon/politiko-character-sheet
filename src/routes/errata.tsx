@@ -5,7 +5,7 @@ import { Download, Trash2 } from "lucide-react";
 import { Panel } from "@/components/hud";
 import { AXES, ROSTER, fullName } from "@/data/members";
 import {
-  PUBLISHED_ERRATA,
+  loadPublishedErrata,
   addLocalReport,
   clearLocalReports,
   downloadText,
@@ -44,8 +44,12 @@ function Errata() {
   const [text, setText] = useState("");
   const [err, setErr] = useState("");
   const [saved, setSaved] = useState<ErrataEntry[]>([]);
+  const [published, setPublished] = useState<ErrataEntry[] | null>(null);
 
-  useEffect(() => setSaved(readLocalReports()), []);
+  useEffect(() => {
+    setSaved(readLocalReports());
+    loadPublishedErrata().then(setPublished);
+  }, []);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
