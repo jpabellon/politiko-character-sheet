@@ -1,7 +1,6 @@
 // Corrections log that works on static hosting (GitHub Pages): no server, no database.
-// Published fixes live in errata-log.txt (plain text, hand-edited, shipped with the site).
+// Published fixes live in public/errata-log.txt (plain text, hand-edited, served with the site).
 // New reports are kept in this browser and exported as a .txt file the team can review.
-import rawLog from "./errata-log.txt?raw";
 import { AXES, ROSTER, fullName, type AxisKey } from "./members";
 
 export type ErrataStat = AxisKey | "whole";
@@ -49,8 +48,18 @@ export function parseErrataLog(text: string): ErrataEntry[] {
   return entries.sort((a, b) => b.date.localeCompare(a.date));
 }
 
-/** Corrections the team has published, read from errata-log.txt at build time. */
-export const PUBLISHED_ERRATA = parseErrataLog(rawLog);
+const LOG_PATH = `${import.meta.env.BASE_URL || "/"}errata-log.txt`;
+
+/** Corrections the team has published, read from public/errata-log.txt when the page opens. */
+export async function loadPublishedErrata(): Promise<ErrataEntry[]> {
+  try {
+    const res = await fetch(LOG_PATH, { cache: "no-store" });
+    if (!res.ok) return [];
+    return parseErrataLog(await res.text());
+  } catch {
+    return [];
+  }
+}
 
 export const statLabel = (stat: ErrataStat) =>
   stat === "whole" ? "Whole sheet" : AXES.find((a) => a.key === stat)?.name ?? stat;
@@ -97,7 +106,7 @@ export function reportsToText(list: ErrataEntry[]): string {
   const header = [
     "# Politiko Character Sheet - reports received",
     `# Exported ${new Date().toISOString().slice(0, 10)}`,
-    "# Paste a block into src/data/errata-log.txt once a fix is live, and fill in outcome.",
+    "# Paste a block into public/errata-log.txt once a fix is live, and fill in outcome.",
   ].join("\n");
   const blocks = list
     .map((e) => FIELDS.map((f) => `${f}: ${e[f]}`).join("\n"))
