@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { X } from "lucide-react";
-import { MiniSheet, T } from "@/components/hud";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { Gamepad2, X } from "lucide-react";
+import { MiniSheet, ModeSwitch, T, useViewMode } from "@/components/hud";
 import { AXES, ROSTER, REGIONS, SCOUTING, TAGS, fullName, regionShort, scoredCount, type Confidence } from "@/data/members";
 
 type Search = { tag?: string | undefined; region?: string | undefined };
@@ -23,6 +23,42 @@ export const Route = createFileRoute("/")({
 });
 
 const selectCls = "h-11 w-full border border-input bg-background px-3 text-sm focus:border-primary focus:outline-none";
+
+/** Dismissible callout that explains the character-sheet idea, in both wordings. */
+function IntroCallout() {
+  const { plain } = useViewMode();
+  const [hidden, setHidden] = useState(true);
+  useEffect(() => setHidden(localStorage.getItem("intro-dismissed") === "1"), []);
+  if (hidden) return null;
+  const dismiss = () => { localStorage.setItem("intro-dismissed", "1"); setHidden(true); };
+  return (
+    <section className="hud-panel rise-in relative mb-6 border-primary/50 p-4 sm:p-5" aria-label="About this site">
+      <button onClick={dismiss} aria-label="Hide this explanation"
+        className="absolute right-2 top-2 grid min-h-11 min-w-11 place-items-center text-muted-foreground hover:text-foreground">
+        <X className="h-4 w-4" />
+      </button>
+      <p className="hud-label flex items-center gap-2 text-primary"><Gamepad2 className="h-4 w-4" aria-hidden /> Why does this look like a game?</p>
+      {plain ? (
+        <div className="mt-3 max-w-3xl space-y-2 text-sm">
+          <p>We show every member of the House like a character in a video game, with a profile page and four scores. It is not a real game, and nobody wins or loses.</p>
+          <p>Why do it this way? Long reports are hard to read. A simple picture — four scores from −5 to +5, plus a note on how sure we are — makes it easy to see where a member stands and to compare two members side by side.</p>
+          <p>The scores come from public records, mostly the bills each member wrote. A score is not good or bad, and a blank score just means we did not find enough proof yet.</p>
+        </div>
+      ) : (
+        <div className="mt-3 max-w-3xl space-y-2 text-sm">
+          <p>Every House member gets a <b>character sheet</b>: four <b>stats</b> from −5 to +5, a <b>scouting level</b> showing how much evidence backs each one, and a <b>quest log</b> of the bills they authored. Stats still fogged? That just means we haven't scouted enough proof yet.</p>
+          <p>Why the game look? Because civic data is usually buried in long PDFs nobody opens. A character sheet turns it into something you can read in seconds — and comparing two members feels like a <b>versus</b> screen.</p>
+          <p>The build is real, though: every stat is computed from public records, mostly filed bills. A score is a position, not a power level — no stat is "better" than another.</p>
+        </div>
+      )}
+      <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
+        <span>Prefer {plain ? "game words" : "plain words"}? Switch any time:</span>
+        <ModeSwitch />
+        <Link to="/rulebook" className="text-primary underline underline-offset-2">Read the full guide</Link>
+      </p>
+    </section>
+  );
+}
 
 function Roster() {
   const search = Route.useSearch();
