@@ -14,7 +14,7 @@ const SAMPLE = [
   "# comment that must be ignored",
   "",
   "date: 2026-11-01",
-  "member: abante-bienvenido",
+  "member: abante-bienvenido-m-jr",
   "stat: economic",
   "issue: The photo on this profile is of the wrong person.",
   "outcome: Photo replaced with the current House portrait.",
@@ -35,7 +35,7 @@ describe("Errata plain-text log", () => {
     expect(entries).toHaveLength(2);
     expect(entries[0]).toEqual({
       date: "2026-11-01",
-      member: "abante-bienvenido",
+      member: "abante-bienvenido-m-jr",
       stat: "economic",
       issue: "The photo on this profile is of the wrong person.",
       outcome: "Photo replaced with the current House portrait.",
@@ -53,7 +53,7 @@ describe("Errata plain-text log", () => {
   it("round-trips reports through the exported txt", () => {
     const report: ErrataEntry = {
       date: "2026-11-01",
-      member: "abante-bienvenido",
+      member: "abante-bienvenido-m-jr",
       stat: "whole",
       issue: "Committee list is out of date.",
       outcome: "Not reviewed yet.",
@@ -70,7 +70,7 @@ describe("Errata plain-text log", () => {
     expect(statLabel("whole")).toBe("Whole sheet");
     expect(statLabel("economic")).toBe("Economic");
     expect(memberLabel("general")).toBe("General");
-    expect(memberLabel("abante-bienvenido")).toBe("Bienvenido Abante");
+    expect(memberLabel("abante-bienvenido-m-jr")).toBe("Bienvenido Jr. M. Abante");
     expect(memberLabel("not-a-real-slug")).toBe("not-a-real-slug");
   });
 });
