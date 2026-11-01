@@ -94,7 +94,7 @@ Coverage is correspondingly uneven:
 
 Other things to know:
 
-- **Party affiliation was added after the scoring run.** The research run returned "Unknown" for every member, so party was filled in separately from Wikipedia's list of current House members (as of 2026-09-21), matched to each member by district and name. It is shown as a fact and never used to score. Political alignment (bloc) is still "Unknown".
+- **Party affiliation was added after the scoring run.** The research run returned "Unknown" for every member, so party was filled in separately from Wikipedia's list of current House members (as of 2026-09-21), matched to each member by district and name. It is shown as a fact and never used to score. Majority or minority bloc comes from the same Wikipedia list and date. Two members (Romeo Acop, who died, and Kiko Barzaga, who was expelled) are left "Unknown" for both, because the list now shows other people for their seats; Gato's bloc is "Unknown" because his seat is vacant.
 - **Only one dimension score in the whole dataset is rated High confidence** (one member's social values). Most scored dimensions are Medium or Low.
 - Bills filed in the window tell you what a member put forward, not how they voted or what they believe. A member can author a bill on request, or co-author without endorsing every provision.
 - One or two bills can move a score a lot when only two issues clear the bar.
