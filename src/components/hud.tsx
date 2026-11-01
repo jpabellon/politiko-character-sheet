@@ -412,7 +412,7 @@ const NAV = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { plain, toggle } = usePlainMode();
+  const { plain } = useViewMode();
   return (
     <div className="min-h-screen pb-20 md:pb-0">
       <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
@@ -437,10 +437,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <CommandSearch className="ml-auto w-full max-w-xs" />
-          <button onClick={toggle} aria-pressed={plain} title="Plain mode swaps game labels for plain labels"
-            className="hidden min-h-10 shrink-0 items-center gap-1.5 border border-border px-2.5 font-mono text-[0.65rem] uppercase tracking-wider text-muted-foreground hover:text-foreground sm:flex">
-            {plain ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />} Plain
-          </button>
+          <ModeSwitch className="hidden sm:flex" />
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">{children}</main>
@@ -454,7 +451,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <a href="https://github.com/bettergovph/kapwa" target="_blank" rel="noreferrer" className="hover:text-foreground">Kapwa</a>
           <Link to="/errata" className="hover:text-foreground">Errata</Link>
           <Link to="/about" className="hover:text-foreground">About &amp; data</Link>
-          <button onClick={toggle} className="hover:text-foreground sm:hidden">Plain mode: {plain ? "on" : "off"}</button>
+          <ModeSwitch className="sm:hidden" />
         </div>
       </footer>
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-border bg-background/95 backdrop-blur md:hidden" aria-label="Main">
