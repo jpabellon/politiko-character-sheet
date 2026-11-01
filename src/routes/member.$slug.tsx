@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { AlertTriangle, Copy, ExternalLink, FileWarning, MapPin, Phone, Share2, Swords } from "lucide-react";
+import { Facebook, Instagram, AlertTriangle, Copy, ExternalLink, FileWarning, MapPin, Phone, Share2, Swords } from "lucide-react";
 import { toast } from "sonner";
+import SOCIALS from "@/data/socials.json";
 import { Crest, Panel, RadarChart, StatBlock, T } from "@/components/hud";
 import { AXES, ROSTER, STATUS_TEXT, billUrl, jurisAuthorUrl, fmtDate, fullName, place, loadMember, regionShort, type Bill } from "@/data/members";
 
@@ -76,6 +77,10 @@ function Sheet() {
               <Swords className="h-4 w-4" /> <T game="Versus" plain="Compare" />
             </Link>
             <button onClick={share} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><Share2 className="h-4 w-4" />Share</button>
+            {(() => { const so = (SOCIALS as Record<string, { fb?: string; ig?: string }>)[m.politicianName]; return so ? (<>
+              {so.fb && <a href={so.fb} target="_blank" rel="noreferrer" aria-label="Facebook page" className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><Facebook className="h-4 w-4" /> Facebook</a>}
+              {so.ig && <a href={so.ig} target="_blank" rel="noreferrer" aria-label="Instagram account" className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><Instagram className="h-4 w-4" /> Instagram</a>}
+            </>) : null; })()}
             {jurisAuthorUrl(m.houseCode) && <a href={jurisAuthorUrl(m.houseCode)!} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary">All bills on BatasWatch ↗</a>}
             <Link to="/errata" search={{ member: m.slug }} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><FileWarning className="h-4 w-4" />Report a correction</Link>
           </div>
