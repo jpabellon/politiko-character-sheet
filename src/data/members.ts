@@ -176,3 +176,6 @@ export const fmtDate = (iso: string) =>
   new Date(iso + "T00:00:00Z").toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
 
 export const BETTERGOV_URL = "https://bettergov.ph";
+
+export const place = (m: Pick<RosterMember, "municipality" | "province">) =>
+  [m.municipality, m.province].filter(Boolean).join(", ");
