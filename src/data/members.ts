@@ -82,8 +82,13 @@ export interface AxisDef {
   plain: string;
   negPole: string;
   posPole: string;
+  /** Game-style pole names shown in Gamer mode */
+  negGamePole: string;
+  posGamePole: string;
   negRadar: string;
   posRadar: string;
+  negGameRadar: string;
+  posGameRadar: string;
   negRadarKey: string;
   posRadarKey: string;
   colorVar: string;
@@ -110,7 +115,9 @@ export const AXES: AxisDef[] = [
   {
     key: "economic", name: "Economic", plain: "Who should run the economy: government or business?",
     negPole: "Government helps more", posPole: "Free market",
+    negGamePole: "Planned", posGamePole: "Market",
     negRadar: "Government helps", posRadar: "Free market",
+    negGameRadar: "Planned eco", posGameRadar: "Free market",
     negRadarKey: "redistributive_economy", posRadarKey: "market_led_economy",
     colorVar: "var(--axis-economic)", evidence: "Bills about wages, pensions, taxes and aid",
     explain: "This shows how a member thinks money and jobs should work in the country.",
@@ -123,7 +130,9 @@ export const AXES: AxisDef[] = [
   {
     key: "social", name: "Social values", plain: "Views on family, marriage, gender and religion in laws",
     negPole: "Traditional", posPole: "Progressive",
+    negGamePole: "Traditional", posGamePole: "Progressive",
     negRadar: "Traditional", posRadar: "Progressive",
+    negGameRadar: "Traditional", posGameRadar: "Progressive",
     negRadarKey: "social_conservatism", posRadarKey: "social_liberalism",
     colorVar: "var(--axis-social)", evidence: "Bills about family, gender, health and morals",
     explain: "This shows how a member thinks laws should treat family life and personal choices.",
@@ -136,7 +145,9 @@ export const AXES: AxisDef[] = [
   {
     key: "civil", name: "Civil liberties", plain: "Your freedoms vs. government power",
     negPole: "More government control", posPole: "More personal freedom",
+    negGamePole: "Order", posGamePole: "Liberty",
     negRadar: "Gov\u2019t control", posRadar: "Personal freedom",
+    negGameRadar: "Order", posGameRadar: "Liberty",
     negRadarKey: "state_restriction", posRadarKey: "civil_liberties",
     colorVar: "var(--axis-civil)", evidence: "Bills about free speech, privacy and police powers",
     explain: "This shows how much a member protects people's rights from being taken away by the government.",
@@ -149,7 +160,9 @@ export const AXES: AxisDef[] = [
   {
     key: "democratic", name: "Democratic institutions", plain: "Should power be shared and watched, or held by a few?",
     negPole: "Power in few hands", posPole: "Strong checks on power",
+    negGamePole: "Strongman", posGamePole: "Checks",
     negRadar: "Power in few hands", posRadar: "Checks on power",
+    negGameRadar: "Strongman", posGameRadar: "Checks",
     negRadarKey: "concentrated_power", posRadarKey: "institutional_checks",
     colorVar: "var(--axis-democratic)", evidence: "Bills about openness, elections, dynasties and oversight",
     explain: "This shows whether a member wants leaders to be watched and limited by courts, Congress, elections and watchdog groups.",

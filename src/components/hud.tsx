@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Eye, EyeOff, HelpCircle, Lock, Map, ScrollText, Search, ShieldCheck, Swords, Users, Radar as RadarIcon, FileWarning } from "lucide-react";
+import { Eye, Gamepad2, Glasses, HelpCircle, Lock, Map, ScrollText, Search, ShieldCheck, Swords, Users, Radar as RadarIcon, FileWarning } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   AXES, SCOUTING, ROSTER, BETTERGOV_URL, billUrl, fullName, monogram, place, regionShort,
@@ -8,8 +8,8 @@ import {
 } from "@/data/members";
 import { cn } from "@/lib/utils";
 
-/* ---------- Plain mode (swap game labels for plain labels) ---------- */
-export function usePlainMode() {
+/* ---------- View mode: Gamer (game words) vs Boomer (plain words) ---------- */
+export function useViewMode() {
   const [plain, setPlain] = useState(false);
   useEffect(() => {
     setPlain(localStorage.getItem("plain-mode") === "1");
@@ -17,16 +17,35 @@ export function usePlainMode() {
     window.addEventListener("plain-mode", h);
     return () => window.removeEventListener("plain-mode", h);
   }, []);
-  const toggle = () => {
-    localStorage.setItem("plain-mode", plain ? "0" : "1");
+  const setMode = (toPlain: boolean) => {
+    localStorage.setItem("plain-mode", toPlain ? "1" : "0");
     window.dispatchEvent(new Event("plain-mode"));
   };
-  return { plain, toggle };
+  return { plain, setGamer: () => setMode(false), setBoomer: () => setMode(true), toggle: () => setMode(!plain) };
 }
 
 export function T({ game, plain }: { game: string; plain: string }) {
-  const { plain: isPlain } = usePlainMode();
+  const { plain: isPlain } = useViewMode();
   return <>{isPlain ? plain : game}</>;
+}
+
+/** Two-option Gamer | Boomer switch. */
+export function ModeSwitch({ className }: { className?: string }) {
+  const { plain, setGamer, setBoomer } = useViewMode();
+  const btn = (active: boolean) =>
+    cn("flex min-h-10 items-center gap-1.5 px-2.5 font-mono text-[0.65rem] uppercase tracking-wider",
+      active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground");
+  return (
+    <div role="group" aria-label="Wording style" title="Gamer uses game words, Boomer uses plain words"
+      className={cn("flex shrink-0 items-center border border-border", className)}>
+      <button onClick={setGamer} aria-pressed={!plain} className={btn(!plain)}>
+        <Gamepad2 className="h-3.5 w-3.5" aria-hidden /> Gamer
+      </button>
+      <button onClick={setBoomer} aria-pressed={plain} className={btn(plain)}>
+        <Glasses className="h-3.5 w-3.5" aria-hidden /> Boomer
+      </button>
+    </div>
+  );
 }
 
 /* ---------- Panel ---------- */
@@ -155,8 +174,8 @@ export function StatMeter({ m, axis, onOpen }: { m: Member; axis: AxisDef; onOpe
       </div>
       <MeterBar axis={axis} score={st.score} confidence={st.confidence} />
       <div className="mt-1.5 flex justify-between gap-3 font-mono text-[0.65rem] uppercase tracking-wide text-muted-foreground">
-        <span>−5 {axis.negPole}</span>
-        <span className="text-right">{axis.posPole} +5</span>
+        <span>−5 <T game={axis.negGamePole} plain={axis.negPole} /></span>
+        <span className="text-right"><T game={axis.posGamePole} plain={axis.posPole} /> +5</span>
       </div>
       <p className="mt-1 text-xs text-muted-foreground">
         {fogged ? <><Lock className="mr-1 inline h-3 w-3" />Not enough evidence · {st.issueCount} of 2 issues needed</> : <>{st.label} · {st.issueCount} issues</>}
@@ -207,7 +226,7 @@ function StatDrawer({ m, axis, onClose }: { m: Member; axis: AxisDef | null; onC
               <div>
                 <MeterBar axis={axis} score={st.score} confidence={st.confidence} />
                 <div className="mt-1.5 flex justify-between font-mono text-[0.65rem] uppercase text-muted-foreground">
-                  <span>{axis.negPole}</span><span>{axis.posPole}</span>
+                  <span><T game={axis.negGamePole} plain={axis.negPole} /></span><span><T game={axis.posGamePole} plain={axis.posPole} /></span>
                 </div>
               </div>
               <dl className="grid grid-cols-3 gap-2 text-center">
@@ -278,6 +297,7 @@ function StatDrawer({ m, axis, onClose }: { m: Member; axis: AxisDef | null; onC
 
 /* ---------- Radar ---------- */
 export function RadarChart({ members, size = 280 }: { members: Member[]; size?: number }) {
+  const { plain } = useViewMode();
   const r = size / 2 - 44;
   const c = size / 2;
   // order spokes so opposite poles sit opposite: pos poles then neg poles
@@ -302,7 +322,7 @@ export function RadarChart({ members, size = 280 }: { members: Member[]; size?: 
             <g key={i}>
               <line x1={c} y1={c} x2={x} y2={y} stroke="var(--border)" />
               <text x={lx} y={ly} textAnchor="middle" dominantBaseline="middle" fontSize="8.5" fill="var(--muted-foreground)" fontFamily="var(--font-mono)">
-                {(pole === "pos" ? a.posRadar : a.negRadar).split(" ").map((w, j, arr) => (
+                {(pole === "pos" ? (plain ? a.posRadar : a.posGameRadar) : (plain ? a.negRadar : a.negGameRadar)).split(" ").map((w, j, arr) => (
                   <tspan key={j} x={lx} dy={j === 0 ? `${-(arr.length - 1) * 0.55}em` : "1.1em"}>{w}</tspan>
                 ))}
               </text>
@@ -392,7 +412,7 @@ const NAV = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { plain, toggle } = usePlainMode();
+  const { plain } = useViewMode();
   return (
     <div className="min-h-screen pb-20 md:pb-0">
       <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
@@ -417,10 +437,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <CommandSearch className="ml-auto w-full max-w-xs" />
-          <button onClick={toggle} aria-pressed={plain} title="Plain mode swaps game labels for plain labels"
-            className="hidden min-h-10 shrink-0 items-center gap-1.5 border border-border px-2.5 font-mono text-[0.65rem] uppercase tracking-wider text-muted-foreground hover:text-foreground sm:flex">
-            {plain ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />} Plain
-          </button>
+          <ModeSwitch className="hidden sm:flex" />
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">{children}</main>
@@ -434,7 +451,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <a href="https://github.com/bettergovph/kapwa" target="_blank" rel="noreferrer" className="hover:text-foreground">Kapwa</a>
           <Link to="/errata" className="hover:text-foreground">Errata</Link>
           <Link to="/about" className="hover:text-foreground">About &amp; data</Link>
-          <button onClick={toggle} className="hover:text-foreground sm:hidden">Plain mode: {plain ? "on" : "off"}</button>
+          <ModeSwitch className="sm:hidden" />
         </div>
       </footer>
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-border bg-background/95 backdrop-blur md:hidden" aria-label="Main">
