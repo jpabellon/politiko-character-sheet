@@ -150,8 +150,7 @@ export const scoredCount = (m: RosterMember) => AXES.filter((a) => m.scores[a.ke
 export const REGIONS = [...new Set(ROSTER.map((m) => m.region))].sort();
 export const TAGS = [...new Set(ROSTER.flatMap((m) => m.tags))].sort();
 export const billUrl = (id: string) => {
-  const m = id.match(/^(H[BR])0*(\d+)$/);
-  return m ? `https://bills.juris.ph/bills/house/${m[1]!.toLowerCase()}${m[2]}` : `https://bills.juris.ph/bills?q=${encodeURIComponent(id)}`;
+  return `https://bills.juris.ph/bills/house/${id.toLowerCase()}`;
 };
 export const billPdfUrl = (id: string) => `https://docs.congress.hrep.online/legisdocs/basic_20/${id}.pdf`;
 export const regionShort = (r: string) => {
