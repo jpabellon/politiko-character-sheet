@@ -27,9 +27,17 @@ function About() {
           <li>UI foundation: the Kapwa design system by BetterGov.</li>
         </ul>
       </Panel>
-      <Panel title="Sample data notice">
-        <p className="text-sm">This preview uses fictional demonstration members. Real profiles are published only after editorial and legal review.</p>
+      <Panel title="Data notes">
+        <ul className="list-disc space-y-2 pl-5 text-sm">
+          <li>254 member profiles from the Politiko rubric dataset, assessed 1 Nov 2026.</li>
+          <li>Photos, authored and co-authored bills and committee memberships from each member's page on congress.gov.ph, retrieved 1 Nov 2026. The Open Congress API was offline at build time.</li>
+          <li>Party affiliation is not recorded in this dataset.</li>
+        </ul>
       </Panel>
+      <a href="https://bettergov.ph" target="_blank" rel="noreferrer" className="hud-panel hud-interactive flex items-center gap-4 p-5">
+        <img src="/logos/BetterGov_Horizontal-White.svg" alt="BetterGov" className="h-8" />
+        <span className="text-sm text-muted-foreground">Part of the BetterGov.ph family of civic tools. Visit bettergov.ph →</span>
+      </a>
     </div>
   );
 }
