@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Member data and axis/pole definitions live in src/data/members.ts; components read axis poles from AXES, never hard-coded text, so rubric changes cannot flip meters.

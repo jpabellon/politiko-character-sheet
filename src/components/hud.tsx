@@ -266,7 +266,7 @@ export function RadarChart({ members, size = 280 }: { members: Member[]; size?: 
   if (!anyScored) return <p className="fog-hatch border border-fog p-6 text-center text-sm text-muted-foreground">Radar hidden — no axis is scored yet.</p>;
   return (
     <figure>
-      <svg viewBox={`0 0 ${size} ${size}`} className="mx-auto w-full max-w-xs" role="img" aria-label="Radar chart of eight pole values; see table below">
+      <svg viewBox={`0 0 ${size} ${size}`} className="mx-auto w-full max-w-xs overflow-visible px-6" role="img" aria-label="Radar chart of eight pole values; see table below">
         {[2.5, 5, 7.5, 10].map((v) => (
           <polygon key={v} points={spokes.map((_, i) => pt(i, v).join(",")).join(" ")} fill="none" stroke="var(--border)" strokeDasharray={v === 5 ? "0" : "2 3"} />
         ))}
