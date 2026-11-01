@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Eye, EyeOff, HelpCircle, Lock, Map, ScrollText, Search, ShieldCheck, Swords, Users, Radar as RadarIcon, FileWarning } from "lucide-react";
+import { Gamepad2, Glasses, HelpCircle, Lock, Map, ScrollText, Search, ShieldCheck, Swords, Users, Radar as RadarIcon, FileWarning } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   AXES, SCOUTING, ROSTER, BETTERGOV_URL, billUrl, fullName, monogram, place, regionShort,
@@ -8,8 +8,8 @@ import {
 } from "@/data/members";
 import { cn } from "@/lib/utils";
 
-/* ---------- Plain mode (swap game labels for plain labels) ---------- */
-export function usePlainMode() {
+/* ---------- View mode: Gamer (game words) vs Boomer (plain words) ---------- */
+export function useViewMode() {
   const [plain, setPlain] = useState(false);
   useEffect(() => {
     setPlain(localStorage.getItem("plain-mode") === "1");
@@ -17,16 +17,35 @@ export function usePlainMode() {
     window.addEventListener("plain-mode", h);
     return () => window.removeEventListener("plain-mode", h);
   }, []);
-  const toggle = () => {
-    localStorage.setItem("plain-mode", plain ? "0" : "1");
+  const setMode = (toPlain: boolean) => {
+    localStorage.setItem("plain-mode", toPlain ? "1" : "0");
     window.dispatchEvent(new Event("plain-mode"));
   };
-  return { plain, toggle };
+  return { plain, setGamer: () => setMode(false), setBoomer: () => setMode(true), toggle: () => setMode(!plain) };
 }
 
 export function T({ game, plain }: { game: string; plain: string }) {
-  const { plain: isPlain } = usePlainMode();
+  const { plain: isPlain } = useViewMode();
   return <>{isPlain ? plain : game}</>;
+}
+
+/** Two-option Gamer | Boomer switch. */
+export function ModeSwitch({ className }: { className?: string }) {
+  const { plain, setGamer, setBoomer } = useViewMode();
+  const btn = (active: boolean) =>
+    cn("flex min-h-10 items-center gap-1.5 px-2.5 font-mono text-[0.65rem] uppercase tracking-wider",
+      active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground");
+  return (
+    <div role="group" aria-label="Wording style" title="Gamer uses game words, Boomer uses plain words"
+      className={cn("flex shrink-0 items-center border border-border", className)}>
+      <button onClick={setGamer} aria-pressed={!plain} className={btn(!plain)}>
+        <Gamepad2 className="h-3.5 w-3.5" aria-hidden /> Gamer
+      </button>
+      <button onClick={setBoomer} aria-pressed={plain} className={btn(plain)}>
+        <Glasses className="h-3.5 w-3.5" aria-hidden /> Boomer
+      </button>
+    </div>
+  );
 }
 
 /* ---------- Panel ---------- */
