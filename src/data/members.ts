@@ -38,6 +38,8 @@ export interface RosterMember {
   houseCode: string | null;
   party: string | null;
   partyAsOf: string | null;
+  alignment: string | null;
+  alignmentAsOf: string | null;
   municipality: string;
   province: string;
   region: string;

@@ -121,6 +121,8 @@ for r in rows:
         "office": r["office_as_of_assessment"], "role": page.get("role"), "houseCode": code,
         "party": None if r["party_affiliation"] in ("", "Unknown") else r["party_affiliation"],
         "partyAsOf": r["party_as_of"] or None,
+        "alignment": None if r["political_alignment"] in ("", "Unknown") else r["political_alignment"],
+        "alignmentAsOf": r["alignment_as_of"] or None,
         "municipality": tcase(r["Municipality"]), "province": tcase(r["Province"]), "region": r["Region"],
         "status": status, "statusDate": sdate, "photo": page.get("photo"),
         "tags": [t.strip() for t in r["advocacy_tags"].split("|") if t.strip()],
