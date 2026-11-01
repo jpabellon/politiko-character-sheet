@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Facebook, Instagram, AlertTriangle, Copy, ExternalLink, FileWarning, MapPin, Phone, Share2, Swords } from "lucide-react";
+import { Facebook, Instagram, AlertTriangle, Copy, ExternalLink, FileWarning, MapPin, Phone, Swords } from "lucide-react";
 import { toast } from "sonner";
 import SOCIALS from "@/data/socials.json";
 import FAMILY from "@/data/family.json";
@@ -42,11 +42,6 @@ function Sheet() {
   const enacted = authored.filter((b) => b.ra).length;
   const other = ROSTER.find((x) => x.slug !== m.slug)!;
 
-  const share = async () => {
-    const url = window.location.href;
-    if (navigator.share) { try { await navigator.share({ title: fullName(m), url }); } catch { /* cancelled */ } }
-    else { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
-  };
   const cite = async () => {
     await navigator.clipboard.writeText(`Politiko Character Sheet. "${fullName(m)}." Assessed ${m.assessmentDate}; evidence window ${m.windowStart} to ${m.windowEnd}. ${window.location.href}`);
     toast.success("Citation copied");
@@ -77,7 +72,6 @@ function Sheet() {
             <Link to="/versus/$pair" params={{ pair: `${m.slug}~${other.slug}` }} className="inline-flex min-h-11 items-center gap-2 bg-brand px-4 text-sm font-semibold text-foreground hover:opacity-90">
               <Swords className="h-4 w-4" /> <T game="Versus" plain="Compare" />
             </Link>
-            <button onClick={share} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><Share2 className="h-4 w-4" />Share</button>
             {(() => { const so = (SOCIALS as Record<string, { fb?: string; ig?: string }>)[m.politicianName]; return so ? (<>
               {so.fb && <a href={so.fb} target="_blank" rel="noreferrer" aria-label="Facebook page" className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><Facebook className="h-4 w-4" /> Facebook</a>}
               {so.ig && <a href={so.ig} target="_blank" rel="noreferrer" aria-label="Instagram account" className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><Instagram className="h-4 w-4" /> Instagram</a>}
