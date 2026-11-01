@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -63,7 +64,7 @@ describe("Errata plain-text log", () => {
   });
 
   it("ships with an empty published log", () => {
-    const text = readFileSync(new URL("../../public/errata-log.txt", import.meta.url), "utf8");
+    const text = readFileSync(join(process.cwd(), "public", "errata-log.txt"), "utf8");
     expect(parseErrataLog(text)).toEqual([]);
   });
 
