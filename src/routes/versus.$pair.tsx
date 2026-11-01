@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { ArrowLeftRight } from "lucide-react";
 import { ConfidenceBadge, Crest, MeterBar, Panel, RadarChart, T } from "@/components/hud";
-import { AXES, ROSTER, fullName, loadMember, type Member } from "@/data/members";
+import { AXES, ROSTER, fullName, place, loadMember, type Member } from "@/data/members";
 
 export const Route = createFileRoute("/versus/$pair")({
   loader: async ({ params }) => {
@@ -107,7 +107,7 @@ function Head({ m, side }: { m: Member; side: number }) {
       <Crest m={m} />
       <div className="min-w-0">
         <p className="truncate text-lg font-bold">{fullName(m)}</p>
-        <p className="truncate text-xs text-muted-foreground">{m.municipality}, {m.province}</p>
+        <p className="truncate text-xs text-muted-foreground">{place(m)}</p>
         <p className="mt-1 font-mono text-[0.65rem] uppercase text-muted-foreground">{m.authoredCount} bills authored</p>
       </div>
     </Link>

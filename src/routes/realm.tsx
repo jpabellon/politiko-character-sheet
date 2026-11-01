@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Crest, Panel, T } from "@/components/hud";
-import { ROSTER, REGIONS, fullName, regionShort } from "@/data/members";
+import { ROSTER, REGIONS, fullName, place, regionShort } from "@/data/members";
 
 // Approximate positions on a simplified archipelago (percent of box)
 const POS: Record<string, [number, number]> = {
@@ -70,7 +70,7 @@ function Realm() {
               <li key={m.slug}>
                 <Link to="/member/$slug" params={{ slug: m.slug }} className="flex min-h-14 items-center gap-3 p-3 hover:bg-panel-strong">
                   <Crest m={m} size="sm" />
-                  <span className="min-w-0 flex-1"><span className="block truncate font-medium">{fullName(m)}</span><span className="block truncate text-xs text-muted-foreground">{m.municipality}, {m.province}</span></span>
+                  <span className="min-w-0 flex-1"><span className="block truncate font-medium">{fullName(m)}</span><span className="block truncate text-xs text-muted-foreground">{place(m)}</span></span>
                   <span className="hidden font-mono text-xs text-muted-foreground sm:inline">{regionShort(m.region)}</span>
                 </Link>
               </li>

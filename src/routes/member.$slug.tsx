@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { AlertTriangle, Copy, ExternalLink, FileWarning, MapPin, Phone, Share2, Swords } from "lucide-react";
 import { toast } from "sonner";
 import { Crest, Panel, RadarChart, StatBlock, T } from "@/components/hud";
-import { AXES, ROSTER, STATUS_TEXT, billUrl, fmtDate, fullName, loadMember, regionShort, type Bill } from "@/data/members";
+import { AXES, ROSTER, STATUS_TEXT, billUrl, fmtDate, fullName, place, loadMember, regionShort, type Bill } from "@/data/members";
 
 export const Route = createFileRoute("/member/$slug")({
   loader: async ({ params }) => {
@@ -67,7 +67,7 @@ function Sheet() {
               <p className="hud-label text-primary">{m.role?.split(" · ")[0] ?? "Representative"}</p>
               <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-4xl">{fullName(m)}</h1>
               <p className="mt-1 text-muted-foreground">{m.office}</p>
-              <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="h-3.5 w-3.5 shrink-0" />{m.municipality}, {m.province} · {regionShort(m.region)}</p>
+              <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="h-3.5 w-3.5 shrink-0" />{place(m)} · {regionShort(m.region)}</p>
             </div>
           </div>
           <p className="mt-4 text-sm text-muted-foreground"><span className="hud-label mr-2">Profile</span>{m.profileLabel}</p>
@@ -140,7 +140,7 @@ function Sheet() {
             </Panel>
           )}
           <Panel title="Realm" delay={525}>
-            <p className="text-sm">{m.municipality}<br /><span className="text-muted-foreground">{m.province} · {m.region}</span></p>
+            <p className="text-sm">{place(m)}<br /><span className="text-muted-foreground">{m.region}</span></p>
             {m.contact?.room && (
               <p className="mt-3 flex items-start gap-2 text-sm text-muted-foreground"><Phone className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                 <span>{m.contact.room}{m.contact.phones.length > 0 && <><br />{m.contact.phones.join(" · ")}</>}</span></p>

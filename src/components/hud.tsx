@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Eye, EyeOff, HelpCircle, Lock, Map, ScrollText, Search, ShieldCheck, Swords, Users, Radar as RadarIcon, FileWarning } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
-  AXES, SCOUTING, ROSTER, BETTERGOV_URL, billUrl, fullName, monogram, regionShort,
+  AXES, SCOUTING, ROSTER, BETTERGOV_URL, billUrl, fullName, monogram, place, regionShort,
   type AxisDef, type Confidence, type Member, type RosterMember, radarValues,
 } from "@/data/members";
 import { cn } from "@/lib/utils";
@@ -373,7 +373,7 @@ export function CommandSearch({ className }: { className?: string }) {
             <li key={m.slug}>
               <Link to="/member/$slug" params={{ slug: m.slug }} onClick={() => setQ("")} className="flex min-h-11 items-center gap-3 px-3 py-2 hover:bg-accent">
                 <Crest m={m} size="sm" />
-                <span className="min-w-0"><span className="block truncate text-sm font-medium">{fullName(m)}</span><span className="block truncate text-xs text-muted-foreground">{m.municipality} · {regionShort(m.region)}</span></span>
+                <span className="min-w-0"><span className="block truncate text-sm font-medium">{fullName(m)}</span><span className="block truncate text-xs text-muted-foreground">{place(m)} · {regionShort(m.region)}</span></span>
               </Link>
             </li>
           ))}
