@@ -122,7 +122,7 @@ function Sheet() {
       </Panel>
 
       {(() => { const fam = (FAMILY as Record<string, { name: string; rel: string; bio: string }[]>)[m.politicianName]; return fam?.length ? (
-        <Panel title="Party members" sub="Known family members and their public roles" delay={340}>
+        <Panel title="Family" sub="Known relatives and their public roles" delay={340}>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {fam.map((f) => (
               <li key={f.name} className="min-w-0 border border-border bg-background/60 p-3">
