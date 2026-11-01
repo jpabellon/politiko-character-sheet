@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import { MiniSheet, T } from "@/components/hud";
-import { AXES, MEMBERS, REGIONS, SCOUTING, TAGS, fullName, scoredCount, type Confidence } from "@/data/members";
+import { AXES, ROSTER, REGIONS, SCOUTING, TAGS, fullName, regionShort, scoredCount, type Confidence } from "@/data/members";
 
 type Search = { tag?: string | undefined; region?: string | undefined };
 
@@ -28,23 +28,21 @@ function Roster() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const [q, setQ] = useState("");
+  const [limit, setLimit] = useState(24);
   const [scouting, setScouting] = useState<"" | Confidence | "any">("");
-  const [party, setParty] = useState("");
-  const parties = [...new Set(MEMBERS.map((m) => m.party))].sort();
   const set = (k: keyof Search, v: string) => navigate({ search: (p: Search) => ({ ...p, [k]: v || undefined }), replace: true });
 
   const list = useMemo(() => {
     const ql = q.toLowerCase();
-    return MEMBERS.filter((m) =>
-      (!ql || `${fullName(m)} ${m.municipality} ${m.province} ${m.office}`.toLowerCase().includes(ql)) &&
+    return ROSTER.filter((m) =>
+      (!ql || `${fullName(m)} ${m.politicianName} ${m.municipality} ${m.province} ${m.office}`.toLowerCase().includes(ql)) &&
       (!search.region || m.region === search.region) &&
       (!search.tag || m.tags.includes(search.tag)) &&
-      (!party || m.party === party) &&
-      (!scouting || (scouting === "insufficient" ? scoredCount(m) === 0 : AXES.some((a) => m.stats[a.key].confidence === scouting))),
+      (!scouting || (scouting === "insufficient" ? scoredCount(m) === 0 : AXES.some((a) => m.scores[a.key].confidence === scouting))),
     );
-  }, [q, search.region, search.tag, party, scouting]);
+  }, [q, search.region, search.tag, scouting]);
 
-  const active = [search.region, search.tag, party, scouting].filter(Boolean).length;
+  const active = [search.region, search.tag, scouting].filter(Boolean).length;
 
   return (
     <div>
@@ -58,10 +56,10 @@ function Roster() {
         </p>
       </section>
 
-      <div className="hud-panel mb-6 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="hud-panel mb-6 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4">
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, city or province" aria-label="Filter by name or district" className={selectCls + " lg:col-span-1"} />
         <select aria-label="Region" value={search.region ?? ""} onChange={(e) => set("region", e.target.value)} className={selectCls}>
-          <option value="">All regions</option>{REGIONS.map((r) => <option key={r}>{r}</option>)}
+          <option value="">All regions</option>{REGIONS.map((r) => <option key={r} value={r}>{regionShort(r)}</option>)}
         </select>
         <select aria-label="Topic" value={search.tag ?? ""} onChange={(e) => set("tag", e.target.value)} className={selectCls}>
           <option value="">All topics</option>{TAGS.map((t) => <option key={t}>{t}</option>)}
@@ -70,15 +68,12 @@ function Roster() {
           <option value="">Any scouting level</option>
           {(Object.keys(SCOUTING) as Confidence[]).map((c) => <option key={c} value={c}>{c === "insufficient" ? "Fully unscouted" : `Has a ${SCOUTING[c].game.toLowerCase()} stat`}</option>)}
         </select>
-        <select aria-label="Party" value={party} onChange={(e) => setParty(e.target.value)} className={selectCls}>
-          <option value="">All parties</option>{parties.map((p) => <option key={p}>{p}</option>)}
-        </select>
       </div>
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">{list.length} members · sorted A–Z by last name</p>
         {active > 0 && (
-          <button onClick={() => { setParty(""); setScouting(""); navigate({ search: {}, replace: true }); }} className="inline-flex min-h-11 items-center gap-1 text-sm text-primary">
+          <button onClick={() => { setScouting(""); navigate({ search: {}, replace: true }); }} className="inline-flex min-h-11 items-center gap-1 text-sm text-primary">
             <X className="h-4 w-4" /> Clear filters
           </button>
         )}
@@ -86,12 +81,16 @@ function Roster() {
 
       {list.length ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {list.map((m, i) => <MiniSheet key={m.slug} m={m} delay={Math.min(i, 8) * 75} />)}
+          {list.slice(0, limit).map((m, i) => <MiniSheet key={m.slug} m={m} delay={Math.min(i % 24, 8) * 75} />)}
         </div>
-      ) : (
+      ) : null}
+      {list.length > limit && (
+        <div className="mt-6 text-center"><button onClick={() => setLimit(limit + 48)} className="min-h-11 border border-border px-6 text-sm hover:border-primary">Show more ({list.length - limit} remaining)</button></div>
+      )}
+      {list.length === 0 && (
         <p className="fog-hatch border border-fog p-8 text-center text-muted-foreground">No members match these filters.</p>
       )}
-      <p className="mt-8 text-xs text-muted-foreground">Sample data: these are fictional demonstration members, not real officials.</p>
+      <p className="mt-8 text-xs text-muted-foreground">Profiles assessed 1 Nov 2026. Photos and bill records from the House of Representatives website.</p>
     </div>
   );
 }

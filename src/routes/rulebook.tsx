@@ -22,7 +22,7 @@ function Rulebook() {
       <header className="rise-in">
         <p className="hud-label text-primary">Rulebook</p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">How the sheet is scored</h1>
-        <p className="mt-2 text-muted-foreground">Every stat comes from bills the member filed between 1 Nov 2021 and 1 Nov 2026. Nothing else.</p>
+        <p className="mt-2 text-muted-foreground">Every stat comes from public records — mostly bills the member filed — between 1 Nov 2021 and 1 Nov 2026.</p>
       </header>
 
       <Panel title="The four axes" sub="Each runs from −5 to +5. These are positions, not power levels.">
@@ -55,14 +55,14 @@ function Rulebook() {
         <ul className="list-disc space-y-2 pl-5 text-sm">
           <li>A stat is scored only when bills cover at least two distinct issues. Otherwise it shows as fog — never as zero.</li>
           <li>Bills a member authored count fully. Co-authored bills count for less.</li>
-          <li>Bills alone can move a score at most three points from center.</li>
+          <li>Most evidence is authored bills. Where a stat also draws on documented conduct or press reports, its sources say so.</li>
           <li>Every score has a rationale, an issue count and the bill numbers behind it.</li>
           <li>Party, family, religion, region and social media are never used to infer a stat.</li>
         </ul>
       </Panel>
 
       <Panel title="Limits" sub="What the sheet cannot tell you">
-        <p className="text-sm">Stats come from bills only — not votes, speeches, attendance or conduct. Many profiles were built from bill titles; treat those as provisional until the full text is read. There is no ranking, no overall score and no "best" member.</p>
+        <p className="text-sm">Stats come mostly from bills — plenary and committee votes were not reviewed. Many profiles were built from bill titles; treat those as provisional until the full text is read. There is no ranking, no overall score and no "best" member.</p>
       </Panel>
 
       <Panel title="Glossary">

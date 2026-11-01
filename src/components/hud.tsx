@@ -3,8 +3,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Eye, EyeOff, HelpCircle, Lock, Map, ScrollText, Search, ShieldCheck, Swords, Users, Radar as RadarIcon, FileWarning } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
-  AXES, SCOUTING, MEMBERS, billUrl, fullName, monogram,
-  type AxisDef, type Confidence, type Member, radarValues,
+  AXES, SCOUTING, ROSTER, BETTERGOV_URL, billUrl, fullName, monogram, place, regionShort,
+  type AxisDef, type Confidence, type Member, type RosterMember, radarValues,
 } from "@/data/members";
 import { cn } from "@/lib/utils";
 
@@ -50,8 +50,17 @@ export function Panel({ title, sub, children, className, delay = 0, action }: {
 }
 
 /* ---------- Crest ---------- */
-export function Crest({ m, size = "md" }: { m: Member; size?: "sm" | "md" | "lg" }) {
-  const dims = { sm: "h-11 w-11 text-sm", md: "h-14 w-14 text-lg", lg: "h-20 w-20 text-2xl sm:h-24 sm:w-24 sm:text-3xl" }[size];
+export function Crest({ m, size = "md" }: { m: RosterMember; size?: "sm" | "md" | "lg" }) {
+  const dims = { sm: "h-12 w-12 text-sm", md: "h-16 w-16 text-lg", lg: "h-28 w-28 text-2xl sm:h-36 sm:w-36 sm:text-3xl" }[size];
+  const [failed, setFailed] = useState(false);
+  if (m.photo && !failed) {
+    return (
+      <div className={cn("relative shrink-0 overflow-hidden border-2 border-primary bg-panel-strong", dims)}>
+        <img src={m.photo} alt={`Official House photo of ${fullName(m)}`} loading="lazy" referrerPolicy="no-referrer"
+          onError={() => setFailed(true)} className="h-full w-full object-cover object-top" />
+      </div>
+    );
+  }
   return (
     <div aria-hidden className={cn("grid shrink-0 place-items-center border-2 border-primary bg-panel-strong font-mono font-bold text-primary", dims)}
       style={{ clipPath: "polygon(50% 0, 100% 18%, 100% 72%, 50% 100%, 0 72%, 0 18%)" }}>
@@ -180,7 +189,8 @@ export function StatBlock({ m }: { m: Member }) {
 
 function StatDrawer({ m, axis, onClose }: { m: Member; axis: AxisDef | null; onClose: () => void }) {
   const st = axis ? m.stats[axis.key] : null;
-  const bills = axis ? m.bills.filter((b) => st!.sources.includes(b.id) || b.informs === axis.key) : [];
+  const bills = axis ? m.bills.filter((b) => st!.billIds.includes(b.id)) : [];
+  const billIdsMissing = axis ? st!.billIds.filter((id) => !m.bills.some((b) => b.id === id)) : [];
   return (
     <Sheet open={!!axis} onOpenChange={(o) => !o && onClose()}>
       <SheetContent className="w-full overflow-y-auto border-l border-border bg-popover sm:max-w-md">
@@ -225,7 +235,19 @@ function StatDrawer({ m, axis, onClose }: { m: Member; axis: AxisDef | null; onC
                   )}
                 </div>
               )}
-              {bills.length > 0 && (
+              {st.sources.length > 0 && (
+                <div>
+                  <p className="hud-label mb-2">Sources</p>
+                  <ul className="space-y-1.5 text-sm">
+                    {st.sources.map((src, i) => (
+                      <li key={i} className="border-l-2 border-border pl-2">
+                        {src.url ? <a href={src.url} target="_blank" rel="noreferrer" className="text-primary underline-offset-2 hover:underline">{src.text || src.url}</a> : src.text}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {(bills.length > 0 || billIdsMissing.length > 0) && (
                 <div>
                   <p className="hud-label mb-2">Evidence bills</p>
                   <ul className="space-y-2">
@@ -233,9 +255,12 @@ function StatDrawer({ m, axis, onClose }: { m: Member; axis: AxisDef | null; onC
                       <li key={b.id}>
                         <a href={billUrl(b.id)} target="_blank" rel="noreferrer" className="block min-h-11 border border-border p-2 hover:border-primary">
                           <span className="font-mono text-xs text-primary">{b.id}</span>
-                          <span className="block text-sm">{b.title}</span>
+                          <span className="line-clamp-3 block text-sm">{b.title}</span>
                         </a>
                       </li>
+                    ))}
+                    {billIdsMissing.map((id) => (
+                      <li key={id}><a href={billUrl(id)} target="_blank" rel="noreferrer" className="block min-h-11 border border-border p-2 font-mono text-xs text-primary hover:border-primary">{id}</a></li>
                     ))}
                   </ul>
                 </div>
@@ -286,8 +311,7 @@ export function RadarChart({ members, size = 280 }: { members: Member[]; size?: 
         })}
         {members.map((m, mi) => {
           const pts = spokes.map(({ a, pole }, i) => {
-            const sc = m.stats[a.key].score;
-            const v = sc === null ? 5 : pole === "pos" ? 5 + sc : 5 - sc;
+            const v = m.stats[a.key].score === null ? 5 : (m.radar[pole === "pos" ? a.posRadarKey : a.negRadarKey] ?? 5);
             return pt(i, v).join(",");
           });
           return (
@@ -333,7 +357,7 @@ export function CommandSearch({ className }: { className?: string }) {
     return () => window.removeEventListener("keydown", h);
   }, []);
   const ql = q.toLowerCase();
-  const results = q ? MEMBERS.filter((m) => `${fullName(m)} ${m.province} ${m.municipality} ${m.office}`.toLowerCase().includes(ql)).slice(0, 6) : [];
+  const results = q ? ROSTER.filter((m) => `${fullName(m)} ${m.politicianName} ${m.province} ${m.municipality} ${m.office}`.toLowerCase().includes(ql)).slice(0, 6) : [];
   return (
     <div className={cn("relative", className)}>
       <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -349,7 +373,7 @@ export function CommandSearch({ className }: { className?: string }) {
             <li key={m.slug}>
               <Link to="/member/$slug" params={{ slug: m.slug }} onClick={() => setQ("")} className="flex min-h-11 items-center gap-3 px-3 py-2 hover:bg-accent">
                 <Crest m={m} size="sm" />
-                <span className="min-w-0"><span className="block truncate text-sm font-medium">{fullName(m)}</span><span className="block truncate text-xs text-muted-foreground">{m.province} · {m.region}</span></span>
+                <span className="min-w-0"><span className="block truncate text-sm font-medium">{fullName(m)}</span><span className="block truncate text-xs text-muted-foreground">{place(m)} · {regionShort(m.region)}</span></span>
               </Link>
             </li>
           ))}
@@ -373,10 +397,17 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen pb-20 md:pb-0">
       <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2.5 sm:gap-6">
-          <Link to="/" className="flex shrink-0 items-center gap-2">
-            <RadarIcon className="h-6 w-6 text-primary" />
-            <span className="font-mono text-sm font-bold uppercase leading-tight tracking-widest">Politiko<span className="hidden text-muted-foreground sm:inline"> / Character Sheet</span></span>
-          </Link>
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <a href={BETTERGOV_URL} target="_blank" rel="noreferrer" aria-label="BetterGov.ph" className="flex items-center">
+              <img src="/logos/BetterGov_Icon-Primary.svg" alt="" className="h-7 w-7" />
+              <span className="ml-1.5 hidden text-sm font-bold tracking-tight lg:inline">BetterGov<span className="text-primary">.ph</span></span>
+            </a>
+            <span className="h-6 w-px bg-border" aria-hidden />
+            <Link to="/" className="flex items-center gap-1.5">
+              <RadarIcon className="h-5 w-5 text-primary" />
+              <span className="font-mono text-sm font-bold uppercase leading-tight tracking-widest">Politiko</span>
+            </Link>
+          </div>
           <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
             {NAV.map((n) => (
               <Link key={n.to} to={n.to} activeOptions={{ exact: n.to === "/" }}
@@ -395,7 +426,12 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8">{children}</main>
       <footer className="mx-auto max-w-7xl border-t border-border px-4 py-6 text-xs text-muted-foreground">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <span>Built on BetterGov Open Congress data and the Kapwa design system.</span>
+          <a href={BETTERGOV_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-foreground">
+            <img src="/logos/BetterGov_Icon-Primary.svg" alt="" className="h-5 w-5" /> A BetterGov.ph civic project
+          </a>
+          <span>Data: House of Representatives, BetterGov Open Congress. Design: Kapwa.</span>
+          <a href="https://open-congress-api.bettergov.ph" target="_blank" rel="noreferrer" className="hover:text-foreground">Open Congress API</a>
+          <a href="https://github.com/bettergovph/kapwa" target="_blank" rel="noreferrer" className="hover:text-foreground">Kapwa</a>
           <Link to="/errata" className="hover:text-foreground">Errata</Link>
           <Link to="/about" className="hover:text-foreground">About &amp; data</Link>
           <button onClick={toggle} className="hover:text-foreground sm:hidden">Plain mode: {plain ? "on" : "off"}</button>
@@ -415,14 +451,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 }
 
 /* ---------- Mini sheet card ---------- */
-export function MiniSheet({ m, delay = 0 }: { m: Member; delay?: number }) {
+export function MiniSheet({ m, delay = 0 }: { m: RosterMember; delay?: number }) {
   return (
-    <Link to="/member/$slug" params={{ slug: m.slug }} className="hud-panel hud-interactive rise-in block p-4 hover:border-primary/60" style={{ animationDelay: `${delay}ms` }}>
+    <Link to="/member/$slug" params={{ slug: m.slug }} className="hud-panel hud-interactive rise-in block min-w-0 p-4 hover:border-primary/60" style={{ animationDelay: `${delay}ms` }}>
       <div className="flex items-center gap-3">
         <Crest m={m} size="sm" />
         <div className="min-w-0">
           <p className="truncate font-semibold">{fullName(m)}</p>
-          <p className="truncate text-xs text-muted-foreground">{m.province} · {m.office.replace("Representative, ", "")}</p>
+          <p className="line-clamp-2 text-xs text-muted-foreground">{(m.role ?? m.office).replace(/^(District|Party-list) Representative · /, "")}</p>
         </div>
       </div>
       {m.status !== "active" && <p className="mt-2 inline-block border border-border px-1.5 font-mono text-[0.6rem] uppercase text-muted-foreground">{m.status.replace("_", " ")}</p>}
@@ -430,11 +466,12 @@ export function MiniSheet({ m, delay = 0 }: { m: Member; delay?: number }) {
         {AXES.map((a) => (
           <div key={a.key} className="flex items-center gap-2">
             <span className="w-7 font-mono text-[0.6rem] uppercase text-muted-foreground">{a.name.slice(0, 3)}</span>
-            <MeterBar axis={a} score={m.stats[a.key].score} confidence={m.stats[a.key].confidence} compact />
+            <div className="min-w-0 flex-1"><MeterBar axis={a} score={m.scores[a.key].score} confidence={m.scores[a.key].confidence} compact /></div>
           </div>
         ))}
       </div>
-      <div className="mt-3 flex flex-wrap gap-1">
+      <p className="mt-3 font-mono text-[0.65rem] uppercase text-muted-foreground">{m.authoredCount} bills authored</p>
+      <div className="mt-2 flex flex-wrap gap-1">
         {m.tags.slice(0, 3).map((t) => <span key={t} className="bg-muted px-1.5 py-0.5 text-[0.65rem] text-muted-foreground">{t}</span>)}
       </div>
     </Link>
