@@ -120,11 +120,13 @@ function Errata() {
         sub="Fixes the team has published, from a plain text file in the site"
         className="lg:col-span-7"
       >
-        {PUBLISHED_ERRATA.length === 0 ? (
+        {published === null ? (
+          <p className="text-sm text-muted-foreground">Loading the corrections log…</p>
+        ) : published.length === 0 ? (
           <p className="fog-hatch border border-fog p-6 text-center text-sm text-muted-foreground">No corrections logged yet for this assessment (1 Nov 2026).</p>
         ) : (
           <ol className="space-y-3">
-            {PUBLISHED_ERRATA.map((e, i) => (
+            {published.map((e, i) => (
               <li key={`${e.date}-${i}`} className="border border-border bg-panel-strong/40 p-3">
                 <p className="hud-label text-muted-foreground">{e.date} · {memberLabel(e.member)} · {statLabel(e.stat)}</p>
                 <p className="mt-1 text-sm">Was wrong: {e.issue}</p>
