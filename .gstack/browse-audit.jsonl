@@ -1,0 +1,10 @@
+{"ts":"2026-11-01T16:06:20.583Z","cmd":"goto","args":"http://127.0.0.1:4173/politiko-character-sheet/","origin":"http://127.0.0.1:4173/politiko-character-sheet/","durationMs":229,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-11-01T16:06:21.329Z","cmd":"wait","args":"--networkidle","origin":"http://127.0.0.1:4173/politiko-character-sheet/","durationMs":643,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-11-01T16:06:21.391Z","cmd":"text","args":"","origin":"http://127.0.0.1:4173/politiko-character-sheet/","durationMs":5,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-11-01T16:06:21.449Z","cmd":"console","args":"--errors","origin":"http://127.0.0.1:4173/politiko-character-sheet/","durationMs":0,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-11-01T16:06:21.527Z","cmd":"goto","args":"http://127.0.0.1:4173/politiko-character-sheet/errata","origin":"http://127.0.0.1:4173/politiko-character-sheet/errata","durationMs":16,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-11-01T16:06:21.598Z","cmd":"text","args":"","origin":"http://127.0.0.1:4173/politiko-character-sheet/errata","durationMs":2,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-11-01T16:06:21.657Z","cmd":"console","args":"--errors","origin":"http://127.0.0.1:4173/politiko-character-sheet/errata","durationMs":0,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-11-01T16:06:21.727Z","cmd":"goto","args":"http://127.0.0.1:4173/politiko-character-sheet/rulebook","origin":"http://127.0.0.1:4173/politiko-character-sheet/rulebook","durationMs":12,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-11-01T16:06:21.795Z","cmd":"text","args":"","origin":"http://127.0.0.1:4173/politiko-character-sheet/rulebook","durationMs":2,"status":"ok","hasCookies":false,"mode":"launched"}
+{"ts":"2026-11-01T16:06:21.855Z","cmd":"console","args":"--errors","origin":"http://127.0.0.1:4173/politiko-character-sheet/rulebook","durationMs":0,"status":"ok","hasCookies":false,"mode":"launched"}

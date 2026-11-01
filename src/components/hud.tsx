@@ -419,7 +419,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2.5 sm:gap-6">
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <a href={BETTERGOV_URL} target="_blank" rel="noreferrer" aria-label="BetterGov.ph" className="flex items-center">
-              <img src="/logos/BetterGov_Icon-Primary.svg" alt="" className="h-7 w-7" />
+              <img src={`${import.meta.env.BASE_URL}logos/BetterGov_Icon-Primary.svg`} alt="" className="h-7 w-7" />
               <span className="ml-1.5 hidden text-sm font-bold tracking-tight lg:inline">BetterGov<span className="text-primary">.ph</span></span>
             </a>
             <span className="h-6 w-px bg-border" aria-hidden />
@@ -444,7 +444,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <footer className="mx-auto max-w-7xl border-t border-border px-4 py-6 text-xs text-muted-foreground">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <a href={BETTERGOV_URL} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-foreground">
-            <img src="/logos/BetterGov_Icon-Primary.svg" alt="" className="h-5 w-5" /> A BetterGov.ph civic project
+            <img src={`${import.meta.env.BASE_URL}logos/BetterGov_Icon-Primary.svg`} alt="" className="h-5 w-5" /> A BetterGov.ph civic project
           </a>
           <span>Data: House of Representatives, BetterGov Open Congress. Design: Kapwa.</span>
           <a href="https://open-congress-api.bettergov.ph" target="_blank" rel="noreferrer" className="hover:text-foreground">Open Congress API</a>
