@@ -399,8 +399,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2.5 sm:gap-6">
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <a href={BETTERGOV_URL} target="_blank" rel="noreferrer" aria-label="BetterGov.ph" className="flex items-center">
-              <img src="/logos/BetterGov_Icon-Primary.svg" alt="" className="h-7 w-7 sm:hidden" />
-              <img src="/logos/BetterGov_Horizontal-White.svg" alt="BetterGov" className="hidden h-6 sm:block" />
+              <img src="/logos/BetterGov_Icon-Primary.svg" alt="" className="h-7 w-7" />
+              <span className="ml-1.5 hidden text-sm font-bold tracking-tight lg:inline">BetterGov<span className="text-primary">.ph</span></span>
             </a>
             <span className="h-6 w-px bg-border" aria-hidden />
             <Link to="/" className="flex items-center gap-1.5">
@@ -453,7 +453,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 /* ---------- Mini sheet card ---------- */
 export function MiniSheet({ m, delay = 0 }: { m: RosterMember; delay?: number }) {
   return (
-    <Link to="/member/$slug" params={{ slug: m.slug }} className="hud-panel hud-interactive rise-in block p-4 hover:border-primary/60" style={{ animationDelay: `${delay}ms` }}>
+    <Link to="/member/$slug" params={{ slug: m.slug }} className="hud-panel hud-interactive rise-in block min-w-0 p-4 hover:border-primary/60" style={{ animationDelay: `${delay}ms` }}>
       <div className="flex items-center gap-3">
         <Crest m={m} size="sm" />
         <div className="min-w-0">
@@ -466,7 +466,7 @@ export function MiniSheet({ m, delay = 0 }: { m: RosterMember; delay?: number })
         {AXES.map((a) => (
           <div key={a.key} className="flex items-center gap-2">
             <span className="w-7 font-mono text-[0.6rem] uppercase text-muted-foreground">{a.name.slice(0, 3)}</span>
-            <MeterBar axis={a} score={m.scores[a.key].score} confidence={m.scores[a.key].confidence} compact />
+            <div className="min-w-0 flex-1"><MeterBar axis={a} score={m.scores[a.key].score} confidence={m.scores[a.key].confidence} compact /></div>
           </div>
         ))}
       </div>

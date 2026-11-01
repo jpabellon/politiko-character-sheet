@@ -35,7 +35,7 @@ function About() {
         </ul>
       </Panel>
       <a href="https://bettergov.ph" target="_blank" rel="noreferrer" className="hud-panel hud-interactive flex items-center gap-4 p-5">
-        <img src="/logos/BetterGov_Horizontal-White.svg" alt="BetterGov" className="h-8" />
+        <img src="/logos/BetterGov_Icon-Primary.svg" alt="BetterGov" className="h-10 w-10" />
         <span className="text-sm text-muted-foreground">Part of the BetterGov.ph family of civic tools. Visit bettergov.ph →</span>
       </a>
     </div>

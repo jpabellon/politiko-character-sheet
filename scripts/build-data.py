@@ -13,6 +13,16 @@ AXES = {"economic": "economic", "social": "social_values", "civil": "civil_liber
 def slugify(s):
     return re.sub(r"[^a-z0-9]+", "-", s.lower().replace("ñ", "n")).strip("-")
 
+SMALL = {"of", "de", "del", "and", "the", "ng"}
+def tcase(s):
+    out = []
+    for i, w in enumerate(s.lower().split()):
+        if w in ("ncr", "car", "barmm", "armm"): out.append(w.upper())
+        elif i and w in SMALL: out.append(w)
+        elif re.match(r"\d", w): out.append(w)
+        else: out.append("-".join(x[:1].upper() + x[1:] for x in w.split("-")))
+    return " ".join(out)
+
 def clean_title(t):
     t = t.replace("AN AC?", "AN ACT").strip()
     return t[:1] + t[1:].lower() if t.isupper() else t
@@ -110,7 +120,7 @@ for r in rows:
         "slug": slug, "politicianName": name, "firstName": first.strip(), "lastName": last.strip().title() if last.isupper() else last.strip(),
         "office": r["office_as_of_assessment"], "role": page.get("role"), "houseCode": code,
         "party": None if r["party_affiliation"] in ("", "Unknown") else r["party_affiliation"],
-        "municipality": r["Municipality"].title(), "province": r["Province"].title(), "region": r["Region"],
+        "municipality": tcase(r["Municipality"]), "province": tcase(r["Province"]), "region": r["Region"],
         "status": status, "statusDate": sdate, "photo": page.get("photo"),
         "tags": [t.strip() for t in r["advocacy_tags"].split("|") if t.strip()],
         "profileLabel": r["profile_label"],
