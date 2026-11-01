@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Facebook, Instagram, AlertTriangle, Copy, ExternalLink, FileWarning, MapPin, Phone, Share2, Swords } from "lucide-react";
 import { toast } from "sonner";
 import SOCIALS from "@/data/socials.json";
+import FAMILY from "@/data/family.json";
 import { Crest, Panel, RadarChart, StatBlock, T } from "@/components/hud";
 import { AXES, ROSTER, STATUS_TEXT, billUrl, jurisAuthorUrl, fmtDate, fullName, place, loadMember, regionShort, type Bill } from "@/data/members";
 
@@ -119,6 +120,19 @@ function Sheet() {
           </div>
         </div>
       </Panel>
+
+      {(() => { const fam = (FAMILY as Record<string, { name: string; rel: string; bio: string }[]>)[m.politicianName]; return fam?.length ? (
+        <Panel title="Party members" sub="Known family members and their public roles" delay={340}>
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {fam.map((f) => (
+              <li key={f.name} className="min-w-0 border border-border bg-background/60 p-3">
+                <p className="font-semibold">{f.name}</p>
+                <p className="hud-label mb-1 text-primary">{f.rel}</p>
+                <p className="text-sm text-muted-foreground">{f.bio}</p>
+              </li>
+            ))}
+          </ul>
+        </Panel>) : null; })()}
 
       <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
         <Panel title="Quest log" sub={`${authored.length} bills as principal author · newest first · links open BatasWatch (bills.juris.ph)`} className="lg:col-span-8" delay={375}>

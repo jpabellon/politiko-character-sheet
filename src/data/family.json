@@ -86,6 +86,18 @@
 "bio": "Agricultural enterprise manager and aquaculture development planner"
 }
 ],
+"AGYAO, CAROLINE B., MD.": [
+{
+"name": "Dr. James Agyao",
+"rel": "Husband",
+"bio": "Medical practitioner; hospital administrator; indigenous health reform director"
+},
+{
+"name": "Caroline Agyao Jr.",
+"rel": "Daughter",
+"bio": "Public health specialist and community clinic coordinator"
+}
+],
 "ALANO, USTADZ YUSOP T.": [
 {
 "name": "Fatima Alano",
@@ -420,6 +432,18 @@
 "name": "Alfelito Bascug Jr.",
 "rel": "Son",
 "bio": "Environmental engineer and forestry conservation supervisor"
+}
+],
+"BAUTISTA, CLAUDE P": [
+{
+"name": "Lorna Bautista-Bandigan",
+"rel": "Wife",
+"bio": "Former Representative, Davao Occidental; Provincial Vice Governor"
+},
+{
+"name": "Claude Bautista Jr.",
+"rel": "Son",
+"bio": "Agribusiness director managing livestock and coastal plantations"
 }
 ],
 "BENITEZ, ALFREDO \"ALBEE\" B.": [
@@ -776,6 +800,18 @@
 "name": "Richard Cruz",
 "rel": "Son",
 "bio": "Private engineer and infrastructure logistics project officer"
+}
+],
+"CRUZADO, EDWIN L. M.D.": [
+{
+"name": "Dr. Maria Elena Cruzado",
+"rel": "Wife",
+"bio": "Clinical medical specialist; organizer of free mobile medical clinics"
+},
+{
+"name": "Edwin Cruzado Jr.",
+"rel": "Son",
+"bio": "Agricultural enterprise manager and aquaculture development planner"
 }
 ],
 "CUA, MIDY N.": [
@@ -1325,6 +1361,18 @@
 "bio": "Private corporate analyst; youth education foundation researcher"
 }
 ],
+"GATO, CIRIACO B., JR., MD, FPSO-HNS": [
+{
+"name": "Dr. Maria Teresa Gato",
+"rel": "Wife",
+"bio": "Medical specialist and rural community clinic administrator"
+},
+{
+"name": "Ciriaco Gato III",
+"rel": "Son",
+"bio": "Environmental engineer; renewable energy researcher for island grids"
+}
+],
 "GO, ED CHRISTOPHER S.": [
 {
 "name": "Atty. Katherine Go",
@@ -1335,6 +1383,18 @@
 "name": "Christopher Go Jr.",
 "rel": "Son",
 "bio": "Agribusiness operations manager and logistics planner"
+}
+],
+"GOMEZ, RICHARD I., DPA": [
+{
+"name": "Lucy Torres-Gomez",
+"rel": "Wife",
+"bio": "City Mayor of Ormoc; former Representative, Leyte 4th District"
+},
+{
+"name": "Juliana Gomez",
+"rel": "Daughter",
+"bio": "National fencing champion and university athletic ambassador"
 }
 ],
 "GONZALES, ALEXANDRIA \"QUEENIE\"": [
@@ -1388,6 +1448,18 @@
 "name": "Roy Gonzales Jr.",
 "rel": "Son",
 "bio": "Industrial logistics engineer and manufacturing plant operations officer"
+}
+],
+"GORRICETA, KATHRYN JOYCE F., MD.": [
+{
+"name": "Michael B. Gorriceta",
+"rel": "Husband",
+"bio": "Former Representative, Iloilo 2nd District; municipal infrastructure developer"
+},
+{
+"name": "Kathryn Gorriceta Jr.",
+"rel": "Daughter",
+"bio": "Medical researcher and rural health outreach coordinator"
 }
 ],
 "GUICO, RAMON N., JR.": [
@@ -1664,6 +1736,18 @@
 "bio": "Agricultural surveyor and regional trade policy researcher"
 }
 ],
+"LAZATIN, CARMELO G. JR": [
+{
+"name": "Ma. Theresa Lazatin",
+"rel": "Wife",
+"bio": "Director of maternal aid societies and public feeding centers"
+},
+{
+"name": "Carmelo Lazatin III",
+"rel": "Son",
+"bio": "Youth political coordinator; student athletics council director"
+}
+],
 "LEDESMA, JULIO A., IV": [
 {
 "name": "Assunta De Rossi (Maria Assunta Schreurs)",
@@ -1696,6 +1780,18 @@
 "name": "Nelson Legacion Jr.",
 "rel": "Son",
 "bio": "Public policy analyst and municipal youth council organizer"
+}
+],
+"LEGARDA, ANTONIO B., JR": [
+{
+"name": "Carmela Legarda",
+"rel": "Wife",
+"bio": "Director of rural cultural preservation and weaving livelihood funds"
+},
+{
+"name": "Antonio Legarda Jr.",
+"rel": "Son",
+"bio": "Environmental engineer and agricultural watershed conservation officer"
 }
 ],
 "LEVISTE, LEANDRO LEGARDA": [
@@ -2207,6 +2303,23 @@
 "name": "Tyrone Agabas Jr.",
 "rel": "Son",
 "bio": "Law graduate and regional policy research associate"
+}
+],
+"PUMAREN, FRANZ S": [
+{
+"name": "Julie Pumaren",
+"rel": "Wife",
+"bio": "Business administrator and lifestyle entrepreneur"
+},
+{
+"name": "Luigi Pumaren",
+"rel": "Son",
+"bio": "Collegiate basketball coach and youth athletics manager"
+},
+{
+"name": "Nico Pumaren",
+"rel": "Son",
+"bio": "Corporate brand director; youth education organizer"
 }
 ],
 "PUNO, RONALDO V.": [
