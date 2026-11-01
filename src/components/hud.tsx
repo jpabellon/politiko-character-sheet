@@ -174,8 +174,8 @@ export function StatMeter({ m, axis, onOpen }: { m: Member; axis: AxisDef; onOpe
       </div>
       <MeterBar axis={axis} score={st.score} confidence={st.confidence} />
       <div className="mt-1.5 flex justify-between gap-3 font-mono text-[0.65rem] uppercase tracking-wide text-muted-foreground">
-        <span>−5 {axis.negPole}</span>
-        <span className="text-right">{axis.posPole} +5</span>
+        <span>−5 <T game={axis.negGamePole} plain={axis.negPole} /></span>
+        <span className="text-right"><T game={axis.posGamePole} plain={axis.posPole} /> +5</span>
       </div>
       <p className="mt-1 text-xs text-muted-foreground">
         {fogged ? <><Lock className="mr-1 inline h-3 w-3" />Not enough evidence · {st.issueCount} of 2 issues needed</> : <>{st.label} · {st.issueCount} issues</>}
@@ -226,7 +226,7 @@ function StatDrawer({ m, axis, onClose }: { m: Member; axis: AxisDef | null; onC
               <div>
                 <MeterBar axis={axis} score={st.score} confidence={st.confidence} />
                 <div className="mt-1.5 flex justify-between font-mono text-[0.65rem] uppercase text-muted-foreground">
-                  <span>{axis.negPole}</span><span>{axis.posPole}</span>
+                  <span><T game={axis.negGamePole} plain={axis.negPole} /></span><span><T game={axis.posGamePole} plain={axis.posPole} /></span>
                 </div>
               </div>
               <dl className="grid grid-cols-3 gap-2 text-center">
@@ -297,6 +297,7 @@ function StatDrawer({ m, axis, onClose }: { m: Member; axis: AxisDef | null; onC
 
 /* ---------- Radar ---------- */
 export function RadarChart({ members, size = 280 }: { members: Member[]; size?: number }) {
+  const { plain } = useViewMode();
   const r = size / 2 - 44;
   const c = size / 2;
   // order spokes so opposite poles sit opposite: pos poles then neg poles
@@ -321,7 +322,7 @@ export function RadarChart({ members, size = 280 }: { members: Member[]; size?: 
             <g key={i}>
               <line x1={c} y1={c} x2={x} y2={y} stroke="var(--border)" />
               <text x={lx} y={ly} textAnchor="middle" dominantBaseline="middle" fontSize="8.5" fill="var(--muted-foreground)" fontFamily="var(--font-mono)">
-                {(pole === "pos" ? a.posRadar : a.negRadar).split(" ").map((w, j, arr) => (
+                {(pole === "pos" ? (plain ? a.posRadar : a.posGameRadar) : (plain ? a.negRadar : a.negGameRadar)).split(" ").map((w, j, arr) => (
                   <tspan key={j} x={lx} dy={j === 0 ? `${-(arr.length - 1) * 0.55}em` : "1.1em"}>{w}</tspan>
                 ))}
               </text>
