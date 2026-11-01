@@ -89,7 +89,7 @@ cp dist/client/index.html dist/client/404.html
 
 Then serve `dist/client` under that path with any static server. (`bun run dev` uses `/` and needs none of this.)
 
-After deploying, confirm `/errata-log.txt` loads. The corrections page fetches it, and visitor-submitted reports live only in the visitor's browser and are exported as a `.txt` file. There is no server inbox, by design.
+After deploying, confirm `/errata-log.txt` loads. The corrections page fetches it, and visitors can open a pre-filled public GitHub issue (labelled `errata`) from the form, or keep a report in their browser and export it as a `.txt` file. There is no server inbox, by design. When you fix something, add a dated block to `public/errata-log.txt` and close the issue.
 
 ## Updating the data
 

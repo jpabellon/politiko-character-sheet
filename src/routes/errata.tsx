@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Download, Trash2 } from "lucide-react";
+import { Download, ExternalLink, Trash2 } from "lucide-react";
 import { Panel } from "@/components/hud";
 import { AXES, ROSTER, fullName } from "@/data/members";
 import {
@@ -9,6 +9,7 @@ import {
   addLocalReport,
   clearLocalReports,
   downloadText,
+  githubIssueUrl,
   memberLabel,
   readLocalReports,
   reportsToText,
@@ -51,17 +52,28 @@ function Errata() {
     loadPublishedErrata().then(setPublished);
   }, []);
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!member || text.trim().length < 10) { setErr("Choose a member and describe the issue (at least 10 characters)."); return; }
+  const draft = (): ErrataEntry | null => {
+    if (!member || text.trim().length < 10) { setErr("Choose a member and describe the issue (at least 10 characters)."); return null; }
     setErr("");
-    const entry: ErrataEntry = {
+    return {
       date: today(),
       member,
       stat: (stat || "whole") as ErrataEntry["stat"],
       issue: text.trim(),
       outcome: "Not reviewed yet.",
     };
+  };
+
+  const openIssue = () => {
+    const entry = draft();
+    if (!entry) return;
+    window.open(githubIssueUrl(entry), "_blank", "noopener,noreferrer");
+  };
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const entry = draft();
+    if (!entry) return;
     setSaved(addLocalReport(entry));
     setText("");
     toast.success("Saved on this device", {
@@ -88,8 +100,8 @@ function Errata() {
         <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">Corrections and right of reply</h1>
         <p className="mt-2 text-muted-foreground">Every fix is dated and public. Target response: 5 working days.</p>
         <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
-          This site is a plain page with no inbox of its own. A report you send is kept on the device you are
-          using, and you can download it as a text file to hand to the team. Fixes the team has published are
+          This site is a plain page with no inbox of its own. You can open a public issue on GitHub, or keep a
+          report on the device you are using and download it as a text file to hand to the team. Fixes the team has published are
           listed in the log below.
         </p>
       </header>
@@ -110,8 +122,11 @@ function Errata() {
             <textarea value={text} onChange={(e) => setText(e.target.value)} rows={5} maxLength={2000} className={field + " mt-1 py-2"} />
           </label>
           {err && <p role="alert" className="text-sm text-destructive">{err}</p>}
-          <button className="min-h-11 w-full bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90">Submit</button>
-          <p className="text-xs text-muted-foreground">Saved on this device only. Download it below to send it in. Members' offices may include a statement to be published alongside the outcome.</p>
+          <button className="min-h-11 w-full bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90">Save on this device</button>
+          <button type="button" onClick={openIssue} className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-primary px-4 text-sm font-semibold text-primary hover:bg-primary/10">
+            <ExternalLink className="h-4 w-4" />Report on GitHub
+          </button>
+          <p className="text-xs text-muted-foreground">“Report on GitHub” opens a pre-filled public issue; you need a free GitHub account to submit it, and it shows your GitHub name. “Save on this device” stays private until you download the log and send it in. Members' offices may include a statement to be published alongside the outcome.</p>
         </form>
       </Panel>
 
@@ -150,6 +165,9 @@ function Errata() {
               <li key={`${e.date}-${i}`} className="border border-border bg-panel-strong/40 p-3">
                 <p className="hud-label text-muted-foreground">{e.date} · {memberLabel(e.member)} · {statLabel(e.stat)}</p>
                 <p className="mt-1 text-sm">{e.issue}</p>
+                <a href={githubIssueUrl(e)} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs text-primary underline">
+                  <ExternalLink className="h-3 w-3" />Report on GitHub
+                </a>
               </li>
             ))}
           </ul>
