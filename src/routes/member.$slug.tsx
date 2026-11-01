@@ -77,7 +77,7 @@ function Sheet() {
               {so.ig && <a href={so.ig} target="_blank" rel="noreferrer" aria-label="Instagram account" className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><Instagram className="h-4 w-4" /> Instagram</a>}
             </>) : null; })()}
             {jurisAuthorUrl(m.houseCode) && <a href={jurisAuthorUrl(m.houseCode)!} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary">All bills on BatasWatch ↗</a>}
-            <Link to="/errata" search={{ member: m.slug }} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><FileWarning className="h-4 w-4" />Report a correction</Link>
+            {false && (<Link to="/errata" search={{ member: m.slug }} className="inline-flex min-h-11 items-center gap-2 border border-border px-4 text-sm hover:border-primary"><FileWarning className="h-4 w-4" />Report a correction</Link>)}
           </div>
         </Panel>
         <Panel className="lg:col-span-4" delay={75}>
