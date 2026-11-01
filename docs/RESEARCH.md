@@ -94,7 +94,7 @@ Coverage is correspondingly uneven:
 
 Other things to know:
 
-- **Party affiliation is not recorded** in this dataset. The rubric asks for party and alignment, but they were "Unknown" for every member, so the member page shows "Not recorded".
+- **Party affiliation was added after the scoring run.** The research run returned "Unknown" for every member, so party was filled in separately from Wikipedia's list of current House members (as of 2026-09-21), matched to each member by district and name. It is shown as a fact and never used to score. Political alignment (bloc) is still "Unknown".
 - **Only one dimension score in the whole dataset is rated High confidence** (one member's social values). Most scored dimensions are Medium or Low.
 - Bills filed in the window tell you what a member put forward, not how they voted or what they believe. A member can author a bill on request, or co-author without endorsing every provision.
 - One or two bills can move a score a lot when only two issues clear the bar.
