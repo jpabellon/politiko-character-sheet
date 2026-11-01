@@ -37,6 +37,7 @@ export interface RosterMember {
   role: string | null;
   houseCode: string | null;
   party: string | null;
+  partyAsOf: string | null;
   municipality: string;
   province: string;
   region: string;

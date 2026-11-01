@@ -99,7 +99,7 @@ function Rulebook() {
       </Panel>
 
       <Panel title="Topics vs. beliefs">
-        <p className="text-sm">The "Skills" tags (like Education or Health) show what a member works on most. They do not show which side the member is on. A member's party is also listed apart from their scores. If we could not confirm it, we write "Unknown."</p>
+        <p className="text-sm">The "Skills" tags (like Education or Health) show what a member works on most. They do not show which side the member is on. A member's party is also listed apart from their scores. If we could not confirm it, we leave it blank.</p>
       </Panel>
 
       <Panel title="Limits" sub="What these scores cannot tell you">

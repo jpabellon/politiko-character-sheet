@@ -31,7 +31,7 @@ function About() {
         <ul className="list-disc space-y-2 pl-5 text-sm">
           <li>254 member profiles from the Politiko rubric dataset, assessed 1 Nov 2026.</li>
           <li>Photos, authored and co-authored bills and committee memberships from each member's page on congress.gov.ph, retrieved 1 Nov 2026. The Open Congress API was offline at build time.</li>
-          <li>Party affiliation is not recorded in this dataset.</li>
+          <li>Party affiliation is from Wikipedia's list of current House members (as of 21 Sep 2026). It is shown as a fact and is never used to score a member.</li>
         </ul>
       </Panel>
       <a href="https://bettergov.ph" target="_blank" rel="noreferrer" className="hud-panel hud-interactive flex items-center gap-4 p-5">

@@ -86,7 +86,7 @@ function Sheet() {
             <div><dt className="hud-label">Co-authored</dt><dd className="font-mono text-2xl font-bold">{m.coauthoredCount}</dd></div>
             <div><dt className="hud-label">Became law</dt><dd className="font-mono text-2xl font-bold">{enacted}</dd></div>
             <div><dt className="hud-label">Committees</dt><dd className="font-mono text-2xl font-bold">{m.committees.length}</dd></div>
-            <div><dt className="hud-label">Party (fact)</dt><dd>{m.party ?? <span className="text-muted-foreground">Not recorded</span>}</dd></div>
+            <div><dt className="hud-label">Party (fact)</dt><dd>{m.party ?? <span className="text-muted-foreground">Not recorded</span>}{m.party && m.partyAsOf && <span className="block font-mono text-xs text-muted-foreground">as of {m.partyAsOf}</span>}</dd></div>
             <div><dt className="hud-label">Status</dt><dd>{STATUS_TEXT[m.status]}</dd></div>
             <div><dt className="hud-label">As of</dt><dd className="font-mono">{m.assessmentDate}</dd></div>
             <div><dt className="hud-label">Evidence window</dt><dd className="font-mono text-xs">{m.windowStart} → {m.windowEnd}</dd></div>
