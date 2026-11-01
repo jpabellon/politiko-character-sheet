@@ -141,24 +141,6 @@ function Errata() {
         title="Your reports on this device"
         sub={saved.length ? `${saved.length} saved here · nothing leaves this device until you download it` : "Nothing saved here yet"}
         className="lg:col-span-12"
-        action={
-          <div className="flex shrink-0 gap-2">
-            <button
-              onClick={download}
-              disabled={!saved.length}
-              className="inline-flex min-h-11 items-center gap-2 border border-primary px-3 text-sm font-semibold text-primary hover:bg-primary/10 disabled:cursor-not-allowed disabled:border-border disabled:text-muted-foreground disabled:hover:bg-transparent"
-            >
-              <Download className="h-4 w-4" />Download log (.txt)
-            </button>
-            <button
-              onClick={wipe}
-              disabled={!saved.length}
-              className="inline-flex min-h-11 items-center gap-2 border border-border px-3 text-sm text-muted-foreground hover:border-destructive hover:text-destructive disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <Trash2 className="h-4 w-4" />Clear
-            </button>
-          </div>
-        }
       >
         {saved.length === 0 ? (
           <p className="text-sm text-muted-foreground">Reports you send with the form above appear here. They stay in this browser, so use “Download log (.txt)” to pass them on.</p>
@@ -172,6 +154,22 @@ function Errata() {
             ))}
           </ul>
         )}
+        <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-4">
+          <button
+            onClick={download}
+            disabled={!saved.length}
+            className="inline-flex min-h-11 items-center gap-2 border border-primary px-3 text-sm font-semibold text-primary hover:bg-primary/10 disabled:cursor-not-allowed disabled:border-border disabled:text-muted-foreground disabled:hover:bg-transparent"
+          >
+            <Download className="h-4 w-4" />Download log (.txt)
+          </button>
+          <button
+            onClick={wipe}
+            disabled={!saved.length}
+            className="inline-flex min-h-11 items-center gap-2 border border-border px-3 text-sm text-muted-foreground hover:border-destructive hover:text-destructive disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Trash2 className="h-4 w-4" />Clear
+          </button>
+        </div>
       </Panel>
     </div>
   );
