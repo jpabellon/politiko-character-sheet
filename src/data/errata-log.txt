@@ -1,0 +1,15 @@
+# Politiko Character Sheet - public corrections log
+#
+# Plain text, safe to edit by hand. Works on static hosting (GitHub Pages): no server,
+# no database. Publish a fix by adding a block below, then commit and rebuild.
+#
+# One block per correction. Blocks are separated by a blank line. Lines starting with
+# # are comments and are ignored. Every field goes on its own line as "key: value".
+#
+#   date:     YYYY-MM-DD the fix went live
+#   member:   member slug from src/data/roster.json, or "general"
+#   stat:     economic | social | civil | democratic | whole
+#   issue:    what was wrong
+#   outcome:  what was fixed or answered
+#
+# The page sorts entries newest first, so order here does not matter.
