@@ -5,7 +5,7 @@ import { AXES, MEMBERS, fullName, getMember, type Member } from "@/data/members"
 
 export const Route = createFileRoute("/versus/$pair")({
   loader: ({ params }) => {
-    const [a, b] = params.pair.split("~");
+    const [a = "", b = ""] = params.pair.split("~");
     if (!getMember(a) || !getMember(b)) throw notFound();
     return { a, b };
   },
