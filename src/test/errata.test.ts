@@ -63,7 +63,8 @@ describe("Errata plain-text log", () => {
   });
 
   it("ships with an empty published log", () => {
-    expect(PUBLISHED_ERRATA).toEqual([]);
+    const text = readFileSync(new URL("../../public/errata-log.txt", import.meta.url), "utf8");
+    expect(parseErrataLog(text)).toEqual([]);
   });
 
   it("labels members and stats in plain words", () => {
