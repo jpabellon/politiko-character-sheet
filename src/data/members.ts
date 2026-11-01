@@ -88,6 +88,12 @@ export interface AxisDef {
   posRadarKey: string;
   colorVar: string;
   evidence: string;
+  /** Grade-6 reading level explanation */
+  explain: string;
+  negMeans: string;
+  posMeans: string;
+  looksAt: string[];
+  careful: string;
   houseBand?: [number, number];
   scoredInHouse: number;
 }
@@ -102,44 +108,64 @@ function band(key: AxisKey): { houseBand?: [number, number]; scoredInHouse: numb
 // Poles are read from this dictionary — never hard-coded in components.
 export const AXES: AxisDef[] = [
   {
-    key: "economic", name: "Economic", plain: "How the economy should be run",
-    negPole: "Redistributive, state-led", posPole: "Market-led",
-    negRadar: "Redistributive", posRadar: "Market-led",
+    key: "economic", name: "Economic", plain: "Who should run the economy: government or business?",
+    negPole: "Government helps more", posPole: "Free market",
+    negRadar: "Government helps", posRadar: "Free market",
     negRadarKey: "redistributive_economy", posRadarKey: "market_led_economy",
-    colorVar: "var(--axis-economic)", evidence: "Wage, social pension, tax and subsidy bills",
+    colorVar: "var(--axis-economic)", evidence: "Bills about wages, pensions, taxes and aid",
+    explain: "This shows how a member thinks money and jobs should work in the country.",
+    negMeans: "The government should collect more taxes from the rich and give more help, services and protection to workers and poor families.",
+    posMeans: "Private businesses and open competition should do more, with fewer government rules and less government ownership.",
+    looksAt: ["Taxes, and who pays more", "Free public services like health care and pensions", "Worker rights and fair pay", "Whether the government or private companies run things like water and power", "Selling government companies and cutting business rules"],
+    careful: "Supporting one subsidy or cash aid does not make someone left. Helping businesses does not make someone right. We look at the whole pattern.",
     ...band("economic"),
   },
   {
-    key: "social", name: "Social values", plain: "Family, gender and moral questions",
-    negPole: "Socially conservative", posPole: "Socially liberal",
-    negRadar: "Social conservatism", posRadar: "Social liberalism",
+    key: "social", name: "Social values", plain: "Views on family, marriage, gender and religion in laws",
+    negPole: "Traditional", posPole: "Progressive",
+    negRadar: "Traditional", posRadar: "Progressive",
     negRadarKey: "social_conservatism", posRadarKey: "social_liberalism",
-    colorVar: "var(--axis-social)", evidence: "Family law, gender, reproductive and gambling bills",
+    colorVar: "var(--axis-social)", evidence: "Bills about family, gender, health and morals",
+    explain: "This shows how a member thinks laws should treat family life and personal choices.",
+    negMeans: "Laws should keep traditional family roles and religious values, and limit things like divorce.",
+    posMeans: "People should make their own choices about marriage, family and their bodies, and everyone should be treated equally.",
+    looksAt: ["Divorce and marriage laws", "Family planning and health care for women", "Equal rights for LGBTQ+ people", "Equal roles for men and women", "How much religion should shape laws"],
+    careful: "A member's own faith is not the same as wanting laws that limit others. A member can be traditional on one issue and progressive on another.",
     ...band("social"),
   },
   {
-    key: "civil", name: "Civil liberties", plain: "Personal freedoms vs. state powers",
-    negPole: "State restriction", posPole: "Civil liberties protection",
-    negRadar: "State restriction", posRadar: "Civil liberties",
+    key: "civil", name: "Civil liberties", plain: "Your freedoms vs. government power",
+    negPole: "More government control", posPole: "More personal freedom",
+    negRadar: "Gov\u2019t control", posRadar: "Personal freedom",
     negRadarKey: "state_restriction", posRadarKey: "civil_liberties",
-    colorVar: "var(--axis-civil)", evidence: "Surveillance, speech, policing and detention bills",
+    colorVar: "var(--axis-civil)", evidence: "Bills about free speech, privacy and police powers",
+    explain: "This shows how much a member protects people's rights from being taken away by the government.",
+    negMeans: "The government and police should get more power to watch, stop or arrest people, even if some freedoms are limited.",
+    posMeans: "People's rights to speak, protest, keep things private and get a fair trial should be strongly protected.",
+    looksAt: ["Freedom of speech and of the press", "The right to protest peacefully", "Privacy and being watched by the government", "Fair treatment by police and courts", "Protection from abuse of power"],
+    careful: "Wanting safe streets does not automatically mean wanting less freedom. One fight with the media or one view on the death penalty is not enough to decide this score.",
     ...band("civil"),
   },
   {
-    key: "democratic", name: "Democratic institutions", plain: "How power is checked",
-    negPole: "Concentrated power", posPole: "Institutional checks",
-    negRadar: "Concentrated power", posRadar: "Institutional checks",
+    key: "democratic", name: "Democratic institutions", plain: "Should power be shared and watched, or held by a few?",
+    negPole: "Power in few hands", posPole: "Strong checks on power",
+    negRadar: "Power in few hands", posRadar: "Checks on power",
     negRadarKey: "concentrated_power", posRadarKey: "institutional_checks",
-    colorVar: "var(--axis-democratic)", evidence: "Transparency, anti-dynasty, election and oversight bills",
+    colorVar: "var(--axis-democratic)", evidence: "Bills about openness, elections, dynasties and oversight",
+    explain: "This shows whether a member wants leaders to be watched and limited by courts, Congress, elections and watchdog groups.",
+    negMeans: "More power should go to one leader or a small group, with fewer people able to check or stop them.",
+    posMeans: "Courts, Congress, fair elections and watchdog offices should be strong enough to keep leaders honest.",
+    looksAt: ["Independent courts, and obeying their rulings", "Congress keeping an eye on the President", "Fair, honest and open elections", "Watchdog offices and open government records", "Letting the public and the opposition take part"],
+    careful: "Being in the opposition does not prove someone supports democracy. Being an ally of the President does not prove the opposite. Talking about corruption once is not enough.",
     ...band("democratic"),
   },
 ];
 
 export const SCOUTING: Record<Confidence, { game: string; plain: string; desc: string }> = {
-  high: { game: "Verified", plain: "High confidence", desc: "Strong, consistent evidence" },
-  medium: { game: "Scouted", plain: "Medium confidence", desc: "Several sources point the same way" },
-  low: { game: "Rumored", plain: "Low confidence", desc: "Limited evidence" },
-  insufficient: { game: "Unidentified", plain: "Not enough evidence", desc: "Fewer than two distinct issues" },
+  high: { game: "Verified", plain: "High confidence", desc: "We found lots of proof from many sources, and it all points the same way." },
+  medium: { game: "Scouted", plain: "Medium confidence", desc: "We found good proof on at least two topics, but some parts are missing or mixed." },
+  low: { game: "Rumored", plain: "Low confidence", desc: "We found only a little proof. It may be old, unclear or mostly talk." },
+  insufficient: { game: "Unidentified", plain: "Not enough evidence", desc: "Not enough proof yet, so we leave this score blank." },
 };
 
 export const fullName = (m: Pick<RosterMember, "firstName" | "lastName">) => `${m.firstName} ${m.lastName}`;
