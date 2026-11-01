@@ -45,7 +45,7 @@ function Rulebook() {
               <ConfidenceBadge c={c} />
               <p className="mt-2 text-sm font-medium">{SCOUTING[c].plain}</p>
               <p className="text-xs text-muted-foreground">{SCOUTING[c].desc}</p>
-              <div className="mt-3"><MeterBar axis={AXES[0]} score={examples[c]} confidence={c} /></div>
+              <div className="mt-3"><MeterBar axis={AXES[0]!} score={examples[c]} confidence={c} /></div>
             </div>
           ))}
         </div>

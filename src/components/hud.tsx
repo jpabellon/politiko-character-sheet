@@ -301,11 +301,11 @@ export function RadarChart({ members, size = 280 }: { members: Member[]; size?: 
         <table className="w-full border-collapse font-mono">
           <thead><tr><th className="py-1 text-left">Pole</th>{members.map((m) => <th key={m.slug} className="text-right">{m.lastName}</th>)}</tr></thead>
           <tbody>
-            {radarValues(members[0]).map((rv, i) => (
+            {radarValues(members[0]!).map((rv, i) => (
               <tr key={i} className="border-t border-border">
                 <td className="py-1">{rv.label}</td>
                 {members.map((m) => {
-                  const v = radarValues(m)[i].value;
+                  const v = radarValues(m)[i]!.value;
                   return <td key={m.slug} className="text-right">{v === null ? "unscored" : v}</td>;
                 })}
               </tr>
