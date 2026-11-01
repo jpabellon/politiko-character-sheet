@@ -42,11 +42,6 @@ function Sheet() {
   const enacted = authored.filter((b) => b.ra).length;
   const other = ROSTER.find((x) => x.slug !== m.slug)!;
 
-  const share = async () => {
-    const url = window.location.href;
-    if (navigator.share) { try { await navigator.share({ title: fullName(m), url }); } catch { /* cancelled */ } }
-    else { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
-  };
   const cite = async () => {
     await navigator.clipboard.writeText(`Politiko Character Sheet. "${fullName(m)}." Assessed ${m.assessmentDate}; evidence window ${m.windowStart} to ${m.windowEnd}. ${window.location.href}`);
     toast.success("Citation copied");
