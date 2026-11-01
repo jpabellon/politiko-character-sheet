@@ -4,12 +4,12 @@ import { X } from "lucide-react";
 import { MiniSheet, T } from "@/components/hud";
 import { AXES, MEMBERS, REGIONS, SCOUTING, TAGS, fullName, scoredCount, type Confidence } from "@/data/members";
 
-type Search = { tag?: string; region?: string };
+type Search = { tag?: string | undefined; region?: string | undefined };
 
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    tag: typeof s.tag === "string" ? s.tag : undefined,
-    region: typeof s.region === "string" ? s.region : undefined,
+    tag: typeof s["tag"] === "string" ? s["tag"] : undefined,
+    region: typeof s["region"] === "string" ? s["region"] : undefined,
   }),
   head: () => ({
     meta: [

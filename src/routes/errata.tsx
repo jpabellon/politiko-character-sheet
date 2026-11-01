@@ -4,12 +4,12 @@ import { toast } from "sonner";
 import { Panel } from "@/components/hud";
 import { AXES, ERRATA, MEMBERS, fullName, getMember } from "@/data/members";
 
-type S = { member?: string; stat?: string };
+type S = { member?: string | undefined; stat?: string | undefined };
 
 export const Route = createFileRoute("/errata")({
   validateSearch: (s: Record<string, unknown>): S => ({
-    member: typeof s.member === "string" ? s.member : undefined,
-    stat: typeof s.stat === "string" ? s.stat : undefined,
+    member: typeof s["member"] === "string" ? s["member"] : undefined,
+    stat: typeof s["stat"] === "string" ? s["stat"] : undefined,
   }),
   head: () => ({
     meta: [

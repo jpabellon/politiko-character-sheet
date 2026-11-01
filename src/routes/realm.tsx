@@ -10,7 +10,7 @@ const POS: Record<string, [number, number]> = {
 };
 
 export const Route = createFileRoute("/realm")({
-  validateSearch: (s: Record<string, unknown>): { region?: string } => ({ region: typeof s.region === "string" ? s.region : undefined }),
+  validateSearch: (s: Record<string, unknown>): { region?: string | undefined } => ({ region: typeof s["region"] === "string" ? s["region"] : undefined }),
   head: () => ({
     meta: [
       { title: "Realm Map — Politiko Character Sheet" },

@@ -136,7 +136,7 @@ const s = (score: number, label: string, confidence: Confidence, issueCount: num
 });
 
 // SAMPLE DATA — fictional members for demonstration. Replace with the 254-row dataset.
-export const MEMBERS: Member[] = [
+export const MEMBERS: Member[] = ([
   {
     slug: "dela-cruz-maria-luz",
     firstName: "Maria Luz", lastName: "Dela Cruz",
@@ -384,7 +384,7 @@ export const MEMBERS: Member[] = [
       { id: "HB-01333", title: "Livestock Insurance Subsidy Act", topic: "Agriculture", date: "2024-01-22", role: "authored", informs: "economic" },
     ],
   },
-].sort((a, b) => a.lastName.localeCompare(b.lastName));
+] as Member[]).sort((a, b) => a.lastName.localeCompare(b.lastName));
 
 export const fullName = (m: Member) => `${m.firstName} ${m.lastName}`;
 export const monogram = (m: Member) => `${m.firstName[0]}${m.lastName[0]}`.toUpperCase();
