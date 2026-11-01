@@ -10,33 +10,128 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ErrataRouteImport } from './routes/errata'
+import { Route as RealmRouteImport } from './routes/realm'
+import { Route as RulebookRouteImport } from './routes/rulebook'
+import { Route as MemberSlugRouteImport } from './routes/member.$slug'
+import { Route as VersusIndexRouteImport } from './routes/versus.index'
+import { Route as VersusPairRouteImport } from './routes/versus.$pair'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ErrataRoute = ErrataRouteImport.update({
+  id: '/errata',
+  path: '/errata',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RealmRoute = RealmRouteImport.update({
+  id: '/realm',
+  path: '/realm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulebookRoute = RulebookRouteImport.update({
+  id: '/rulebook',
+  path: '/rulebook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemberSlugRoute = MemberSlugRouteImport.update({
+  id: '/member/$slug',
+  path: '/member/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VersusIndexRoute = VersusIndexRouteImport.update({
+  id: '/versus/',
+  path: '/versus/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VersusPairRoute = VersusPairRouteImport.update({
+  id: '/versus/$pair',
+  path: '/versus/$pair',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/errata': typeof ErrataRoute
+  '/realm': typeof RealmRoute
+  '/rulebook': typeof RulebookRoute
+  '/member/$slug': typeof MemberSlugRoute
+  '/versus/$pair': typeof VersusPairRoute
+  '/versus/': typeof VersusIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/errata': typeof ErrataRoute
+  '/realm': typeof RealmRoute
+  '/rulebook': typeof RulebookRoute
+  '/member/$slug': typeof MemberSlugRoute
+  '/versus/$pair': typeof VersusPairRoute
+  '/versus': typeof VersusIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/errata': typeof ErrataRoute
+  '/realm': typeof RealmRoute
+  '/rulebook': typeof RulebookRoute
+  '/member/$slug': typeof MemberSlugRoute
+  '/versus/$pair': typeof VersusPairRoute
+  '/versus/': typeof VersusIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/errata'
+    | '/realm'
+    | '/rulebook'
+    | '/member/$slug'
+    | '/versus/$pair'
+    | '/versus/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/errata'
+    | '/realm'
+    | '/rulebook'
+    | '/member/$slug'
+    | '/versus/$pair'
+    | '/versus'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/errata'
+    | '/realm'
+    | '/rulebook'
+    | '/member/$slug'
+    | '/versus/$pair'
+    | '/versus/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ErrataRoute: typeof ErrataRoute
+  RealmRoute: typeof RealmRoute
+  RulebookRoute: typeof RulebookRoute
+  MemberSlugRoute: typeof MemberSlugRoute
+  VersusPairRoute: typeof VersusPairRoute
+  VersusIndexRoute: typeof VersusIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +143,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/errata': {
+      id: '/errata'
+      path: '/errata'
+      fullPath: '/errata'
+      preLoaderRoute: typeof ErrataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/realm': {
+      id: '/realm'
+      path: '/realm'
+      fullPath: '/realm'
+      preLoaderRoute: typeof RealmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rulebook': {
+      id: '/rulebook'
+      path: '/rulebook'
+      fullPath: '/rulebook'
+      preLoaderRoute: typeof RulebookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/member/$slug': {
+      id: '/member/$slug'
+      path: '/member/$slug'
+      fullPath: '/member/$slug'
+      preLoaderRoute: typeof MemberSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/versus/': {
+      id: '/versus/'
+      path: '/versus'
+      fullPath: '/versus/'
+      preLoaderRoute: typeof VersusIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/versus/$pair': {
+      id: '/versus/$pair'
+      path: '/versus/$pair'
+      fullPath: '/versus/$pair'
+      preLoaderRoute: typeof VersusPairRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ErrataRoute: ErrataRoute,
+  RealmRoute: RealmRoute,
+  RulebookRoute: RulebookRoute,
+  MemberSlugRoute: MemberSlugRoute,
+  VersusPairRoute: VersusPairRoute,
+  VersusIndexRoute: VersusIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
