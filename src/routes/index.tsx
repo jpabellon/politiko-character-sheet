@@ -2,14 +2,16 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Gamepad2, X } from "lucide-react";
 import { MiniSheet, ModeSwitch, T, useViewMode } from "@/components/hud";
-import { AXES, ROSTER, REGIONS, SCOUTING, TAGS, fullName, regionShort, scoredCount, type Confidence } from "@/data/members";
+import { AXES, ROSTER, REGIONS, PARTIES, BLOCS, SCOUTING, TAGS, fullName, regionShort, scoredCount, type Confidence } from "@/data/members";
 
-type Search = { tag?: string | undefined; region?: string | undefined };
+type Search = { tag?: string | undefined; region?: string | undefined; party?: string | undefined; bloc?: string | undefined };
 
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     tag: typeof s["tag"] === "string" ? s["tag"] : undefined,
     region: typeof s["region"] === "string" ? s["region"] : undefined,
+    party: typeof s["party"] === "string" ? s["party"] : undefined,
+    bloc: typeof s["bloc"] === "string" ? s["bloc"] : undefined,
   }),
   head: () => ({
     meta: [
@@ -73,12 +75,14 @@ function Roster() {
     return ROSTER.filter((m) =>
       (!ql || `${fullName(m)} ${m.politicianName} ${m.municipality} ${m.province} ${m.office}`.toLowerCase().includes(ql)) &&
       (!search.region || m.region === search.region) &&
+      (!search.party || m.party === search.party) &&
+      (!search.bloc || m.alignment === search.bloc) &&
       (!search.tag || m.tags.includes(search.tag)) &&
       (!scouting || (scouting === "insufficient" ? scoredCount(m) === 0 : AXES.some((a) => m.scores[a.key].confidence === scouting))),
     );
-  }, [q, search.region, search.tag, scouting]);
+  }, [q, search.region, search.party, search.bloc, search.tag, scouting]);
 
-  const active = [search.region, search.tag, scouting].filter(Boolean).length;
+  const active = [search.region, search.party, search.bloc, search.tag, scouting].filter(Boolean).length;
 
   return (
     <div>
@@ -96,13 +100,19 @@ function Roster() {
       </section>
       <IntroCallout />
 
-      <div className="hud-panel mb-6 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="hud-panel mb-6 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3">
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, city or province" aria-label="Filter by name or district" className={selectCls + " lg:col-span-1"} />
         <select aria-label="Region" value={search.region ?? ""} onChange={(e) => set("region", e.target.value)} className={selectCls}>
           <option value="">All regions</option>{REGIONS.map((r) => <option key={r} value={r}>{regionShort(r)}</option>)}
         </select>
+        <select aria-label="Party" value={search.party ?? ""} onChange={(e) => set("party", e.target.value)} className={selectCls}>
+          <option value="">All parties</option>{PARTIES.map((p) => <option key={p}>{p}</option>)}
+        </select>
+        <select aria-label="Bloc" value={search.bloc ?? ""} onChange={(e) => set("bloc", e.target.value)} className={selectCls}>
+          <option value="">Majority or minority</option>{BLOCS.map((b) => <option key={b}>{b}</option>)}
+        </select>
         <select aria-label="Topic" value={search.tag ?? ""} onChange={(e) => set("tag", e.target.value)} className={selectCls}>
-          <option value="">All topics</option>{TAGS.map((t) => <option key={t}>{t}</option>)}
+          <option value="">All Topics/Advocacies</option>{TAGS.map((t) => <option key={t}>{t}</option>)}
         </select>
         <select aria-label="Scouting level" value={scouting} onChange={(e) => setScouting(e.target.value as Confidence)} className={selectCls}>
           <option value="">Any scouting level</option>
