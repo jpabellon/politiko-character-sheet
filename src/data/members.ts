@@ -190,6 +190,8 @@ export const monogram = (m: Pick<RosterMember, "firstName" | "lastName">) =>
 export const rosterMember = (slug: string) => ROSTER.find((m) => m.slug === slug);
 export const scoredCount = (m: RosterMember) => AXES.filter((a) => m.scores[a.key].score !== null).length;
 export const REGIONS = [...new Set(ROSTER.map((m) => m.region))].sort();
+export const PARTIES = [...new Set(ROSTER.map((m) => m.party).filter((p): p is string => !!p))].sort();
+export const BLOCS = [...new Set(ROSTER.map((m) => m.alignment).filter((a): a is string => !!a))].sort();
 export const TAGS = [...new Set(ROSTER.flatMap((m) => m.tags))].sort();
 export const billUrl = (id: string) => {
   return `https://bills.juris.ph/bills/house/${id.toLowerCase()}`;
